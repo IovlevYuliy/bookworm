@@ -10,7 +10,7 @@ import { customHttpProvider } from './_helpers/index';
 import { AlertComponent } from './_directives/index';
 import { AuthGuard } from './_guards/index';
 import { AlertService, AuthenticationService, UserService } from './_services/index';
-import { HomeComponent } from './home/index';
+import { HomeComponent, MainComponent } from './home/index';
 import { LoginComponent } from './login/index';
 import { RegisterComponent } from './register/index';
 
@@ -25,6 +25,7 @@ import { RegisterComponent } from './register/index';
         AppComponent,
         AlertComponent,
         HomeComponent,
+        MainComponent,
         LoginComponent,
         RegisterComponent
     ],
