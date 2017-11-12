@@ -14,9 +14,8 @@ body {
   padding-top: 3rem;
   padding-bottom: 3rem;
   color: #5a5a5a;
-  background-image: url(b45.png);
+  background-image: url(./asserts/b45.png);
 }
-
 
 /* CUSTOMIZE THE CAROUSEL
 -------------------------------------------------- */
@@ -43,7 +42,6 @@ body {
   min-width: 100%;
   height: 32rem;
 }
-
 
 /* MARKETING CONTENT
 -------------------------------------------------- */
@@ -97,4 +95,17 @@ body {
   .featurette-heading {
     margin-top: 7rem;
   }
+}
+
+
+.containerCenter{
+  width:100%;
+  height: 100%;
+  position: fixed;
+  top:0;
+  left:0;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
 }
