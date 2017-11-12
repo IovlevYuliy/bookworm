@@ -6,4 +6,12 @@
     templateUrl: 'app.component.html'
 })
 
-export class AppComponent { }
+export class AppComponent {
+	 book = {
+        name: ""
+    };
+
+    search(): void {
+        this.router.navigate(['/books'], { queryParams: { title: this.book.name }});
+    }
+}
