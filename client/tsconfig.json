@@ -6,9 +6,11 @@
         "module": "commonjs",
         "moduleResolution": "node",
         "noImplicitAny": true,
-        "sourceMap": true,
+        "sourceMap": false,
         "suppressImplicitAnyIndexErrors": true,
-        "target": "es5"
+        "target": "es5",
+        // "outDir": "build",
+        // "rootDir": "app"
     },
     "exclude": [
         "node_modules/*"

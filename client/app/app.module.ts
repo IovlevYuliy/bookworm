@@ -9,8 +9,9 @@ import { routing } from './app.routing';
 import { customHttpProvider } from './_helpers/index';
 import { AlertComponent } from './_directives/index';
 import { AuthGuard } from './_guards/index';
-import { AlertService, AuthenticationService, UserService } from './_services/index';
+import { AlertService, AuthenticationService, UserService, BookService } from './_services/index';
 import { HomeComponent, MainComponent } from './home/index';
+import { BookComponent } from './book/index';
 import { LoginComponent } from './login/index';
 import { RegisterComponent } from './register/index';
 
@@ -27,14 +28,16 @@ import { RegisterComponent } from './register/index';
         HomeComponent,
         MainComponent,
         LoginComponent,
-        RegisterComponent
+        RegisterComponent,
+        BookComponent
     ],
     providers: [
         customHttpProvider,
         AuthGuard,
         AlertService,
         AuthenticationService,
-        UserService
+        UserService,
+        BookService
     ],
     bootstrap: [AppComponent]
 })
