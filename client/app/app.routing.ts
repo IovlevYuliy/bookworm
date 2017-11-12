@@ -7,13 +7,13 @@ import { RegisterComponent } from './register/index';
 import { AuthGuard } from './_guards/index';
 
 const appRoutes: Routes = [
-    { path: '', component: MainComponent },
+    { path: 'index', component: MainComponent },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
 	{ path: 'books', component: BookComponent },
 
     // otherwise redirect to home
-    { path: '**', redirectTo: '' }
+    { path: '**', redirectTo: 'index' },
 ];
 
 export const routing = RouterModule.forRoot(appRoutes);
