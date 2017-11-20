@@ -8,7 +8,7 @@
         "noImplicitAny": true,
         "sourceMap": false,
         "suppressImplicitAnyIndexErrors": true,
-        "target": "es5",
+        "target": "es5"
         // "outDir": "build",
         // "rootDir": "app"
     },
