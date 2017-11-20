@@ -1,16 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { BookDetails } from '../_models/index';
 import { BookService } from '../_services/index';
-// import {Autosize} from 'angular2-autosize';
 
-
-
-// import '../../asserts/autosize.min.js'
-
-// declare var autosize: any;
-// declare var $: any;
+declare var autosize: any;
 
 @Component({
     moduleId: module.id,
@@ -18,7 +12,7 @@ import { BookService } from '../_services/index';
     styleUrls: ['./bookDetails.component.css']
 })
 
-export class BookDetailsComponent implements OnInit{
+export class BookDetailsComponent implements OnInit, AfterViewInit{
     bookDetails: BookDetails;
 
     constructor(
@@ -26,7 +20,7 @@ export class BookDetailsComponent implements OnInit{
         private route: ActivatedRoute) {
     }
 
-    ngOnInit() {
+    ngOnInit() {       
         this.bookDetails = new BookDetails(
             '1',
             'Эффект Марко',
@@ -34,10 +28,10 @@ export class BookDetailsComponent implements OnInit{
             'Юсси Адлер-Ольсен',
             '2017'
         );
-        // autosize = new autosize();
-        
-        // @ViewChild('textarea') textDOM: ElementRef;
-        // autosize();//((('textarea'));
-        
+    }
+
+    ngAfterViewInit() {
+        var textareas = document.querySelectorAll('textarea');
+        autosize(textareas);
     }
 }
