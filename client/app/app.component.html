@@ -16,15 +16,17 @@
           <a class="nav-link disabled" href="#">Disabled</a>
         </li>-->
       </ul> 
-      <form ngNoForm class="form-inline mt-2 mt-md-0">
+      <form *ngIf="currentUser" ngNoForm class="form-inline mt-2 mt-md-0">
         <input [(ngModel)]="book.name" class="form-control mr-sm-2" type="text" placeholder="Поиск" aria-label="Search">
         <a class="btn btn-warning" href="/books?title={{book.name}}" role="button">Найти</a>
         	<!-- <a class="btn btn-default my-2 my-sm-0" href="/books?title={{book.name}}" role="button">Найти</a> -->
   <!-- <button class="btn btn-link mr-sm-2" href = "/login">Вход</button> -->
       </form>
-       <a class="btn btn-info" style="margin-left: 5px" role="button" href="login">Вход <span class="sr-only">(current)</span></a>
+
+       <a *ngIf="!currentUser" class="btn btn-info" style="margin-left: 5px" role="button" href="login">Вход <span class="sr-only">(current)</span></a>
+       <a *ngIf="currentUser" class="btn btn-info" (click) = "logout()" style="margin-left: 5px" role="button" href="#">Выход <span class="sr-only">(current)</span></a>
     </div>
   </nav>
 </header>
-<router-outlet>
-</router-outlet>
+<alert></alert>
+<router-outlet></router-outlet>

@@ -1,7 +1,7 @@
 <div id='book-container' class="book-container">
 	<div *ngFor="let book of books" class="book-item">
 		<div class=book-image-container>
-			<img class="book-image" src={{book.thumbnail}}>
+			<img class="book-image" (click) = "AddBook()" src={{book.thumbnail}}>
 		</div>
 		<span class= "book-title">
 			{{book.title}}

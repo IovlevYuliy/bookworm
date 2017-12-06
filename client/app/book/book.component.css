@@ -2,6 +2,8 @@
 	display: inline-flex;
 	flex-direction: row;
 	flex-flow: wrap;
+	margin-left: 5%;
+	margin-right: 5%;
 }
 
 .book-item {
