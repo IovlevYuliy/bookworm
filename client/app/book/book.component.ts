@@ -17,8 +17,7 @@ export class BookComponent implements OnInit {
     constructor(
         private bookService: BookService,
         private route: ActivatedRoute,
-        private alertService: AlertService,
-        private router: Router) {
+        private alertService: AlertService) {
     }
 
     ngOnInit() {
@@ -36,6 +35,16 @@ export class BookComponent implements OnInit {
                 error => {
                     this.alertService.error(error);
                 });
+        // this.bookService.create(this.model)
+        //     .subscribe(
+        //         data => {
+        //             this.alertService.success('Книга успешно добавлена в избранное', true);
+        //             this.router.navigate(['/login']);
+        //         },
+        //         error => {
+        //             this.alertService.error(error);
+        //             this.loading = false;
+        //         });
     }
 
     private loadBooks() {

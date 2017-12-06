@@ -1,6 +1,5 @@
 var books = require('google-books-search');
 var Q = require('q');
-
 var service = {};
 
 service.find = find;
