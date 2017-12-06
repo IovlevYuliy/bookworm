@@ -16,7 +16,7 @@ export class BookService {
     }
 
     AddInFavourite(book: Book) {
-    	return this.http.post('/users/register', book);
+    	return this.http.post('/books/favour', book);
 	}
 
 }

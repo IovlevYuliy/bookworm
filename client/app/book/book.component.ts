@@ -12,7 +12,6 @@ import { BookService, AlertService } from '../_services/index';
 export class BookComponent implements OnInit {
     books: Book[] = [];
     title: any;
-    model: any = {};
 
     constructor(
         private bookService: BookService,
@@ -25,9 +24,9 @@ export class BookComponent implements OnInit {
         this.loadBooks();
     }
 
-    AddBook()
+    AddBook(book:Book)
     {
-        this.bookService.AddInFavourite(this.model)
+        this.bookService.AddInFavourite(book)
             .subscribe(
                 data => {
                     this.alertService.success('Книга успешно добавлена в избранное', true);
@@ -35,16 +34,6 @@ export class BookComponent implements OnInit {
                 error => {
                     this.alertService.error(error);
                 });
-        // this.bookService.create(this.model)
-        //     .subscribe(
-        //         data => {
-        //             this.alertService.success('Книга успешно добавлена в избранное', true);
-        //             this.router.navigate(['/login']);
-        //         },
-        //         error => {
-        //             this.alertService.error(error);
-        //             this.loading = false;
-        //         });
     }
 
     private loadBooks() {

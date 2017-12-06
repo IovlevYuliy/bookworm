@@ -11,9 +11,6 @@ var config = {
     password: '1',
     server: 'localhost', 
     database: 'BookWormDB'
-    // options:{
-    //   instanceName: 'SQLNASTYA'
-    // }
 };
 db.bind('users');
 

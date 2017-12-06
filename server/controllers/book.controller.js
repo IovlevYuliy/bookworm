@@ -6,6 +6,7 @@ var url = require('url');
 
 // routes
 router.get('/', findBook);
+router.post('/favour', AddFavourite);
 
 module.exports = router;
 
@@ -20,3 +21,15 @@ function findBook(req, res) {
             res.status(400).send(err);
         });
 }
+
+function AddFavourite(req, res)
+{
+    bookService.AddInFavourite(req.body)
+        .then(function () {
+            res.sendStatus(200);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
