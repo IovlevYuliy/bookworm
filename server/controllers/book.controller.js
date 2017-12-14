@@ -10,7 +10,8 @@ router.post('/favour', AddFavourite);
 
 module.exports = router;
 
-function findBook(req, res) {
+function findBook(req, res)
+{
 	var params = url.parse(req.url, true);
  	var query = params.query;
     bookService.find(query.title)

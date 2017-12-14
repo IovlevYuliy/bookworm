@@ -1,13 +1,8 @@
 var books = require('google-books-search');
 var Q = require('q');
 var service = {};
-const sql = require('mssql');
-var config = {
-    user: 'sa',
-    password: '1',
-    server: 'localhost', 
-    database: 'BookWormDB'
-};
+var config = require('config.json');
+var sql = require('mssql');
 
 service.find = find;
 service.AddInFavourite = AddInFavourite;
@@ -15,87 +10,73 @@ service.AddInFavourite = AddInFavourite;
 module.exports = service;
 
 function find(key) {
-    var deferred = Q.defer();
-    books.search(key, function(error, results) {
-        if (!error) {
-            deferred.resolve(results);
-        } else {
-            deferred.reject(error);
-        }
+    return new Promise((resolve, reject) => {
+        books.search(key, function(error, results) {
+            return error ? reject(error) : resolve(results);
+        });
     });
-    return deferred.promise;
 }
 
 function AddInFavourite(book) {
-    var deferred = Q.defer();
-
-    //connect to your database
-     return new Promise((resolve, reject) => {
-
-        var qq = sql.connect(config, function (err) {
-            if (err) console.log(err);
-            PrepareBook(book);
-            CheckBook(book)
-                .then(function(){
-                    AddBook(book)
-                    .then(function(){
-                        qq.close();
-                    })
-                   resolve();
-                })
-                
-                .catch(function(err){
-                    qq.close();
-                   reject(err);
-                });
-        })
+    var connection = new sql.ConnectionPool(config.dbConfig);
+    PrepareBook(book);
+    return new Promise((resolve, reject) => {
+        connection.connect()
+            .then(() => {
+                return CheckBook(connection, book);
+            })
+            .then(() => {
+                return AddBook(connection, book);
+            })
+            .then(() => {
+                connection.close();
+                resolve();
+            })
+            .catch((err) => {
+                connection.close();
+                reject(err);
+            })
     });
-    return deferred.promise;
 }
 
-function CheckBook(book)
+function CheckBook(connection, book)
 {
-    var deferred = Q.defer();
-    var request = new sql.Request();
-
+    var request = new sql.Request(connection);
     var queryExistBook = `select * from Book where title = '${book.title}'  and author = '${book.authors}'`;
-    console.log(queryExistBook);
-    request.query(queryExistBook, function (err, recordset) {
-        if (err)
-        {
-            deferred.reject(err);
-            console.log(err);
-        }
-        else
-        {
-            if (recordset.rowsAffected > 0)
-                deferred.reject('Данная книга уже содержится в избранном');
-            else
-                deferred.resolve();
-        }
+    
+    return new Promise(function (resolve, reject) {
+        return request.query(queryExistBook, function (err, recordset) {
+            if (err) {
+                console.log(err);
+                reject(err);
+            }
+            else {
+                if (recordset.rowsAffected > 0)
+                    reject('Данная книга уже содержится в избранном');
+                else
+                    resolve();
+            }
+        });
     });
-    return deferred.promise;
 }
 
-function AddBook(book)
+function AddBook(connection, book)
 {
-    var deferred = Q.defer();
     var queryInsertBook = `insert into Book(Title, Author, Link, CoverImage, PublishedDate, Description, EstimatedRating) values
             ('${book.title}', '${book.authors}', '${book.link}', '${book.thumbnail}', '${book.publishedDate}',
              '${book.description}', 1)`;
-    var request = new sql.Request();
-    request.query(queryInsertBook, function (err, recordset) {
-        if (err)
-        {
-            deferred.reject(err);
-            console.log(err);
-        }
-        else
-        {
-            deferred.resolve();
-        }
-    }); 
-    return deferred.promise;
+
+    var request = new sql.Request(connection);
+
+    return new Promise(function (resolve, reject) {
+        return request.query(queryInsertBook, function (err, recordset) {
+            if (err) {
+                console.log(queryInsertBook, err);
+                return reject(err);
+            }
+            return resolve();
+        });
+    });
 }
 
 function PrepareBook(book)
@@ -127,8 +108,8 @@ function mysql_real_escape_string (str) {
             case "'":
             case "\\":
             case "%":
-                return char+char; // prepends a backslash to backslash, percent,
-                                  // and double/single quotes
+                return char + char; // prepends a backslash to backslash, percent,
+                                    // and double/single quotes
         }
     });
 }
