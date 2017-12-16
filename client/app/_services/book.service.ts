@@ -15,4 +15,13 @@ export class BookService {
         return this.http.get('/books?title=' + _name).map((response: Response) => response.json());
     }
 
+    addInFavourite()
+    {
+
+    }
+
+        create(book: Book) {
+        return this.http.post('/users/register', book);
+    }
+
 }

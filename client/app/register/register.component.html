@@ -2,7 +2,7 @@
     <div class="col-md-4">
         <h2>Регистрация</h2>
         <form name="form" (ngSubmit)="f.form.valid && register()" #f="ngForm" novalidate>
-            <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !firstName.valid }">
+<!--             <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !firstName.valid }">
                 <label for="firstName">Имя</label>
                 <input type="text" class="form-control" name="firstName" [(ngModel)]="model.firstName" #firstName="ngModel" required />
                 <div *ngIf="f.submitted && !firstName.valid" class="help-block">Поле "Имя" обязательно для заполнения</div>
@@ -11,11 +11,16 @@
                 <label for="lastName">Фамилия</label>
                 <input type="text" class="form-control" name="lastName" [(ngModel)]="model.lastName" #lastName="ngModel" required />
                 <div *ngIf="f.submitted && !lastName.valid" class="help-block">Поле "Фамилия" обязательно для заполнения</div>
+            </div> -->
+            <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !email.valid }">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" name="email" [(ngModel)]="model.email" #email="ngModel" required email />
+                <div *ngIf="f.submitted && !email.valid" class="help-block">Поле "email" обязательно и должно содержать электронный адрес</div>
             </div>
-            <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !username.valid }">
-                <label for="username">Логин</label>
-                <input type="text" class="form-control" name="username" [(ngModel)]="model.username" #username="ngModel" required />
-                <div *ngIf="f.submitted && !username.valid" class="help-block">Поле "Логин" обязательно для заполнения</div>
+            <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !Login.valid }">
+                <label for="login">Логин</label>
+                <input type="text" class="form-control" name="Login" [(ngModel)]="model.Login" #Login="ngModel" required />
+                <div *ngIf="f.submitted && !Login.valid" class="help-block">Поле "Логин" обязательно для заполнения</div>
             </div>
             <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !password.valid }">
                 <label for="password">Пароль</label>
