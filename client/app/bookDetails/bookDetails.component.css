@@ -1,0 +1,26 @@
+.book-container {
+    margin-top: 30px;
+	margin-left: 10%;
+	margin-right: 10%; 
+}
+.info-row{
+    padding: 5px;
+    /* border:1px solid #ced4da;
+    border-radius: .30rem; */
+    margin-bottom: 0.5rem;
+}
+.book-border{
+    border:1px solid #ced4da;
+    border-radius: .30rem; 
+}
+.book-title{
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+.detail{
+    margin-left: 5px;
+}
+div.center{
+    margin: auto;
+    width: 50%;
+}

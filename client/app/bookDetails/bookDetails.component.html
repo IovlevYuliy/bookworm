@@ -1,65 +1,47 @@
-<!-- <script src="https://rawgit.com/jackmoore/autosize/master/dist/autosize.min.js"></script>  -->
-<div class="container">
-    <div class="col-md-4 placeholder">
-            <img src={{bookDetails.thumbnail}} width="200" height="200" class="img-fluid rounded-circle" alt="Обложка книги">
+<div class="row book-container">
+    <div class="col-md-3">
+        <img src="data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=" width="100%" class="rounded-circle" alt="Обложка книги"> 
+        <div class="center">
+            <button class="btn btn-success center" style="margin-top:5px; margin-left: 15px;">
+            ДОБАВИТЬ
+        </button>
+        </div>
+        <div style="margin-top:20px">
+            Купить:
+            <a href="http://www.ozon.ru/context/detail/id/141916644/?partner=livelibru&utm_source=livelibru&utm_medium=partner">Ozon</a>
+        </div>
+         
     </div>
     <div class="col-md-8">
-        <div class="form-group row">
-            <div class="col-md-3">
-                <label>Название</label>
-            </div>
-            <div class="col-md-9">
-                <input type="text" value={{bookDetails.name}} class="form-control" disabled/>
-            </div>
+        <div class="form-group row">                    
+            <span class="book-title">
+                   {{bookDetails.name}}
+            </span>
         </div>
-        <div class="form-group row">
-            <div class="col-md-3">
-                <label>Автор(-ы)</label>
+        <div class="book-border">
+            <div class="info-row">            
+                    <label>Автор(-ы): </label> <i class="detail"> {{ bookDetails.author}}</i>            
             </div>
-            <div class="col-md-9">
-                <input type="text" value={{bookDetails.author}} class="form-control" disabled/>
+            <div class="info-row">            
+                    <label>Год издания: </label> <span class="detail"> {{ bookDetails.publishedYear}}</span>            
             </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-md-3">
-                <label>Год издания</label>
+            <div class="info-row">
+                <label>Рейтинг (Ваш / пользователей):</label>
+                <!-- <span class="detail glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span> -->
+                <img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"> / <img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png">
+                </div>
+
+            <div class="info-row">
+                <textarea autosize class="form-control" disabled>
+                    {{bookDetails.description}}
+                </textarea>           
             </div>
-            <div class="col-md-9">
-                <input type="text" value={{bookDetails.publishedYear}} class="form-control" disabled/>
+            <div class="info-row">
+                <label>Ключевые слова:</label>
+                <div class="col-md-9">
+
+                </div>
             </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-md-3">
-                <label>Аннотация</label>
-            </div>
-            <div class="col-md-9">
-            <textarea autosize class="form-control" disabled>
-                {{bookDetails.description}}
-            </textarea>
-            </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-md-3">
-                <label>Можно купить</label>
-            </div>
-            <div class="col-md-9">
-                <a href="http://www.ozon.ru/context/detail/id/141916644/?partner=livelibru&utm_source=livelibru&utm_medium=partner">Ozon</a>
-            </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-md-3">
-                <label>Рейтинг (Ваш / пользователей)</label>
-            </div>
-            <div class="col-md-9">
-                <span class="glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span>
-            </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-md-3">
-                <label>Ключевые слова</label>
-            </div>
-            <div class="col-md-9">
-            </div>
-        </div>
+        </div> 
     </div>
 </div>
