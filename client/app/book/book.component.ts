@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-
 import { ActivatedRoute } from '@angular/router';
 import { Book } from '../_models/index';
 import { BookService, AlertService } from '../_services/index';
@@ -13,7 +12,6 @@ import { BookService, AlertService } from '../_services/index';
 export class BookComponent implements OnInit {
     books: Book[] = [];
     title: any;
-    model: any = {};
 
     constructor(
         private bookService: BookService,
@@ -26,18 +24,16 @@ export class BookComponent implements OnInit {
         this.loadBooks();
     }
 
-    AddBook()
+    AddBook(book:Book)
     {
-        // this.bookService.create(this.model)
-        //     .subscribe(
-        //         data => {
-        //             this.alertService.success('Книга успешно добавлена в избранное', true);
-        //             this.router.navigate(['/login']);
-        //         },
-        //         error => {
-        //             this.alertService.error(error);
-        //             this.loading = false;
-        //         });
+        this.bookService.AddInFavourite(book)
+            .subscribe(
+                data => {
+                    this.alertService.success('Книга успешно добавлена в избранное', true);
+                },
+                error => {
+                    this.alertService.error(error);
+                });
     }
 
     private loadBooks() {
