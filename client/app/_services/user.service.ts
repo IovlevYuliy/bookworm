@@ -20,7 +20,7 @@ export class UserService {
     }
 
     update(user: User) {
-        return this.http.put('/users/' + user._id, user);
+        return this.http.put('/users/' + user.UserId, user);
     }
 
     delete(_id: string) {

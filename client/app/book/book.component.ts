@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-
 import { ActivatedRoute } from '@angular/router';
 import { Book } from '../_models/index';
-import { BookService } from '../_services/index';
+import { BookService, AlertService } from '../_services/index';
 
 @Component({
     moduleId: module.id,
@@ -16,12 +15,25 @@ export class BookComponent implements OnInit {
 
     constructor(
         private bookService: BookService,
-        private route: ActivatedRoute) {
+        private route: ActivatedRoute,
+        private alertService: AlertService) {
     }
 
     ngOnInit() {
         this.title = this.route.snapshot.queryParams.title;
         this.loadBooks();
+    }
+
+    AddBook(book:Book)
+    {
+        this.bookService.AddInFavourite(book)
+            .subscribe(
+                data => {
+                    this.alertService.success('Книга успешно добавлена в избранное', true);
+                },
+                error => {
+                    this.alertService.error(error);
+                });
     }
 
     private loadBooks() {
