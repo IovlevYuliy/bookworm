@@ -1,9 +1,7 @@
 <!-- <script src="https://rawgit.com/jackmoore/autosize/master/dist/autosize.min.js"></script>  -->
-<div class="row">
+<div class="container">
     <div class="col-md-4 placeholder">
-            <img src="data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
-            
-            <div class="text-muted">Обложка книги</div>
+            <img src={{bookDetails.thumbnail}} width="200" height="200" class="img-fluid rounded-circle" alt="Обложка книги">
     </div>
     <div class="col-md-8">
         <div class="form-group row">
@@ -11,7 +9,7 @@
                 <label>Название</label>
             </div>
             <div class="col-md-9">
-                <input type="text" value="Эффект Марко" class="form-control" disabled/>
+                <input type="text" value={{bookDetails.name}} class="form-control" disabled/>
             </div>
         </div>
         <div class="form-group row">
@@ -19,7 +17,7 @@
                 <label>Автор(-ы)</label>
             </div>
             <div class="col-md-9">
-                <input type="text" value="Юсси Адлер-Ольсен" class="form-control" disabled/>
+                <input type="text" value={{bookDetails.author}} class="form-control" disabled/>
             </div>
         </div>
         <div class="form-group row">
@@ -27,7 +25,7 @@
                 <label>Год издания</label>
             </div>
             <div class="col-md-9">
-                <input type="text" value="2017" class="form-control" disabled/>
+                <input type="text" value={{bookDetails.publishedYear}} class="form-control" disabled/>
             </div>
         </div>
         <div class="form-group row">

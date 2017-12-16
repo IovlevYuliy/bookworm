@@ -4,6 +4,7 @@ export class BookDetails {
     description: string;
     publishedYear: string;
     author: string;
+  //  keywords: Keyword[];
 
     constructor(id: string, _name: string, _description: string, _publishedYear: string, _author: string)
     {
