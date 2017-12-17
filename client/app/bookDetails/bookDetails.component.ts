@@ -46,7 +46,7 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
         autosize(textareas);
     }
 
-    AddBook(book:BookDetails, status: string)
+    AddBook(book:BookDetails, statusId: string)
     {
         let currentUser = JSON.parse(localStorage.getItem('currentUser'));
         // this.bookService.AddInFavourite(book, currentUser)
