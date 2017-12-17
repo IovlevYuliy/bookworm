@@ -1,0 +1,65 @@
+<div class="row book-container">
+    <div class="col-md-3">
+        <img src={{bookDetails.image}} width="100%" class="rounded-circle" alt="Обложка книги">
+        <div class="center">
+            <button class="btn btn-info center" style="margin-top:5px; margin-left: 15px;">
+                Загрузить
+            </button>
+        </div>
+        <div style="margin-top:20px">
+            Купить:
+            <a href={{bookDetails.link}}>{{bookDetails.link}}</a>
+        </div>
+
+    </div>
+    <div class="col-md-8">
+        <div class="book-border">
+
+            <div class="info-row">
+                <div class="col-md-3">
+                    <label>Название: </label>
+                </div>
+                <div class="col-md-9">
+                    <input [(ngModel)]="bookDetails.name" type="text" class="form-control" />
+                </div>
+            </div>
+
+            <div class="info-row">
+                <div class="col-md-3">
+                    <label>Автор(-ы): </label>
+                </div>
+                <div class="col-md-9">
+                    <input [(ngModel)]="bookDetails.author" type="text" class="form-control" />
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="col-md-3">
+                    <label>Год издания: </label>
+                </div>
+                <div class="col-md-9">
+                    <input [(ngModel)]="bookDetails.publishedYear" type="number" min="1000" class="form-control" />
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="col-md-3">
+                    <label>Аннотация: </label>
+                </div>
+                <div class="col-md-9">
+                    <textarea [(ngModel)]="bookDetails.description" autosize class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="col-md-3">
+                    <label>Ключевые слова:</label>
+                </div>
+                <div class="col-md-9">
+
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-success" style="margin-top:5px">
+            Сохранить
+        </button> |
+        <a href="#">Отмена</a>
+    </div>
+</div>

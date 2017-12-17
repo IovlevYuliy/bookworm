@@ -1,0 +1,12 @@
+<div class="container">
+    <div *ngFor="let book of books" class="row" style="border-radius: 25px; border: 2px solid #b3b2e4; margin-bottom:5px">
+        <div class="col-md-4 placeholder">
+                <img src={{book.thumbnail}} width="100" height="100" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">							
+                <div class="text-muted">{{book.author}}, {{book.name}}</div>
+        </div>
+        <div class="col-md-8">
+            новые слова
+        </div>
+    </div>
+    </hr>			
+</div>
