@@ -7,6 +7,7 @@ var url = require('url');
 // routes
 router.get('/', findBook);
 router.post('/favour', AddFavourite);
+router.get('/catalog', getCatalog);
 
 module.exports = router;
 
@@ -15,6 +16,18 @@ function findBook(req, res)
 	var params = url.parse(req.url, true);
  	var query = params.query;
     bookService.find(query.title)
+        .then(function (data) {
+            res.send(data);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function getCatalog(req, res)
+{
+    console.log('getCatalog');
+     bookService.getCatalog()
         .then(function (data) {
             res.send(data);
         })
