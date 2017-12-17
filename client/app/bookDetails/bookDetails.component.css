@@ -24,4 +24,8 @@
 div.center{
     margin: auto;
     width: 50%;
+} 
+
+.status-item{
+    cursor: pointer;
 }

@@ -6,6 +6,7 @@ export class BookDetails {
     author: string;
     link: string;
     image: string;
+    status: string;
 
   //  keywords: Keyword[];
 

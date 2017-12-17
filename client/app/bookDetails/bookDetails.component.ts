@@ -28,8 +28,7 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
     }
 
     ngOnInit() {       
-        //this.bookId = this.route.snapshot.queryParams.bookId;
-        //this.getBookByID()
+        //здесь нужно еще получить статус книги, если есть.
 
         this.bookDetails = new BookDetails(
             '1',
@@ -42,12 +41,21 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
         );
     }
 
-    private getBookByID() {
-     
-    }
-
     ngAfterViewInit() {
         var textareas = document.querySelectorAll('textarea');
         autosize(textareas);
+    }
+
+    AddBook(book:BookDetails, status: string)
+    {
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        // this.bookService.AddInFavourite(book, currentUser)
+        //     .subscribe(
+        //         data => {
+        //             this.alertService.success('Книга успешно добавлена в избранное', true);
+        //         },
+        //         error => {
+        //             this.alertService.error(error);
+        //         });
     }
 }
