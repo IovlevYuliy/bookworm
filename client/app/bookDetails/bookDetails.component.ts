@@ -39,6 +39,7 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
             this.receivedData.link,
             this.receivedData.thumbnail
         );
+        this.bookDetails.status = "Заброшена";
     }
 
     ngAfterViewInit() {

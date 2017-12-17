@@ -29,3 +29,11 @@ div.center{
 .status-item{
     cursor: pointer;
 }
+
+.status-item-checked{
+    border:2px solid rgb(12, 110, 96);
+}
+.btn-w-status{
+    background-color: rgb(12, 110, 96);
+    border:2px solid rgb(57, 136, 124);
+}
