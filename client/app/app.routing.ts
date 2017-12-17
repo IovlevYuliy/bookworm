@@ -6,6 +6,8 @@ import { LoginComponent } from './login/index';
 import { RegisterComponent } from './register/index';
 import { AuthGuard } from './_guards/index';
 import { BookDetailsComponent } from './bookDetails/index';
+import { CatalogComponent } from './catalog/index';
+
 
 const appRoutes: Routes = [
     { path: 'index', component: MainComponent },
@@ -14,6 +16,7 @@ const appRoutes: Routes = [
     { path: 'register', component: RegisterComponent },
 	{ path: 'books', component: BookComponent },
     { path: 'bookDetails', component: BookDetailsComponent },
+    { path: 'books/catalog', component: CatalogComponent },
     // otherwise redirect to home
     { path: '**', redirectTo: 'index' },
 ];

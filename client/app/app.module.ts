@@ -16,6 +16,8 @@ import { BookComponent } from './book/index';
 import { LoginComponent } from './login/index';
 import { RegisterComponent } from './register/index';
 import { BookDetailsComponent } from './bookDetails/index';
+import { SendDataService } from './_services/data.service';
+import { CatalogComponent } from './catalog/index';
 
 @NgModule({
     imports: [
@@ -32,7 +34,9 @@ import { BookDetailsComponent } from './bookDetails/index';
         LoginComponent,
         RegisterComponent,
         BookComponent,
-        BookDetailsComponent
+        BookDetailsComponent,
+        CatalogComponent
+
         // Autosize
     ],
     providers: [
@@ -42,7 +46,8 @@ import { BookDetailsComponent } from './bookDetails/index';
         AuthenticationService,
         UserService,
         BookService,
-        EmitterService
+        EmitterService,
+        SendDataService
     ],
     bootstrap: [AppComponent]
 })

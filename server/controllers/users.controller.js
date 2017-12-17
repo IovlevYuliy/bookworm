@@ -18,6 +18,7 @@ function authenticate(req, res) {
         .then(function (user) {
             if (user) {
                 // authentication successful
+                console.log('auth', user);
                 res.send(user);
             } else {
                 // authentication failed
