@@ -2,7 +2,8 @@
 	<div *ngFor="let book of books; let i = index;" class="book-item">
 		<div class=book-image-container>
 			<a routerLink="/bookDetails" routerLinkActive="active">
-				<img class="book-image" src={{book.thumbnail}} (click)="this._SendDataService.setData(book);">
+				<img *ngIf="book.thumbnail" class="book-image" src={{book.thumbnail}} (click)="this._SendDataService.setData(book);">
+				<img *ngIf="!book.thumbnail" class="book-image" src="../../asserts/empty-book.png" (click)="this._SendDataService.setData(book);SharedData=book.Title;">
 			</a>
 		</div>
 		<span class= "book-title">
