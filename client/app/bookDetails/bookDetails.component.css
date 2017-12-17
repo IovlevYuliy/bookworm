@@ -9,7 +9,8 @@
     border-radius: .30rem; */
     margin-bottom: 0.5rem;
 }
-.book-border{
+.info-block{
+    background-color:rgba(212, 228, 245, 0.4);
     border:1px solid #ced4da;
     border-radius: .30rem; 
 }
