@@ -13,6 +13,7 @@
             // our app is within the app folder
             app: 'app',
 
+            //'angular2-autosize': 'npm:angular2-autosize/angular2-autosize.js',
             // angular bundles
             '@angular/core': 'npm:@angular/core/bundles/core.umd.js',
             '@angular/common': 'npm:@angular/common/bundles/common.umd.js',

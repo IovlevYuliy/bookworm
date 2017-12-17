@@ -22,6 +22,7 @@ service.getById = getById;
 service.createUser = createUser;
 service.update = update;
 service.delete = _delete;
+service.CurrentUser = null;
 
 module.exports = service;
 
@@ -46,13 +47,14 @@ function authenticate(login, password) {
                  if (user && bcrypt.compareSync(password, user.recordset[0].Password)) {
                     // authentication successful
                     deferred.resolve({
-                        UserId: user.UserId,
-                        UserRoleId: user.UserRoleId,
-                        Login: user.Login,
-                        Password: user.hash,
-                        Email: user.Email,
+                        UserId: user.recordset[0].UserId,
+                        UserRoleId: user.recordset[0].UserRoleId,
+                        Login: user.recordset[0].Login,
+                        Password: user.recordset[0].hash,
+                        Email: user.recordset[0].Email,
                         token: jwt.sign({ sub: user.UserId }, configJson.secret)
                     });
+                    service.CurrentUser = user;
                 } else {
                     // authentication failed
                     deferred.resolve();

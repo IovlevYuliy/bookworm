@@ -1,0 +1,12 @@
+<div id='book-container' class="book-container">
+	<div *ngFor="let book of books; let i = index;" class="book-item">
+		<div class=book-image-container>
+			<a routerLink="/bookDetails" routerLinkActive="active">
+				<img class="book-image" src={{book.thumbnail}} (click)="this._SendDataService.setData(book);">
+			</a>
+		</div>
+		<span class= "book-title">
+			{{book.title}}
+		</span>
+	</div>
+</div>
