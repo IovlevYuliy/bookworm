@@ -7,11 +7,11 @@ import { SendDataService } from '../_services/data.service';
 
 @Component({
     moduleId: module.id,
-    templateUrl: './book.component.html',
-    styleUrls: ['./book.component.css']
+    templateUrl: './catalog.component.html',
+    styleUrls: ['./catalog.component.css']
 })
 
-export class BookComponent implements OnInit {
+export class CatalogComponent implements OnInit {
     books: Book[] = [];
     title: any;
 
@@ -20,11 +20,9 @@ export class BookComponent implements OnInit {
         private route: ActivatedRoute,
         private alertService: AlertService,
         private _SendDataService: SendDataService) {
-        console.log(this._SendDataService.getData());
     }
 
     ngOnInit() {
-        this.title = this.route.snapshot.queryParams.title;
         this.loadBooks();
     }
 
@@ -42,7 +40,7 @@ export class BookComponent implements OnInit {
     }
 
     private loadBooks() {
-        this.bookService.getByName(this.title)
+        this.bookService.getCatalogBooks()
             .subscribe(books => { this.books = books; console.log(this.books); });
     }
 }

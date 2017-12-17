@@ -2,6 +2,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+// import { Autosize } from 'angular2-autosize';
 
 import { AppComponent } from './app.component';
 import { routing } from './app.routing';
@@ -14,6 +15,9 @@ import { HomeComponent, MainComponent } from './home/index';
 import { BookComponent } from './book/index';
 import { LoginComponent } from './login/index';
 import { RegisterComponent } from './register/index';
+import { BookDetailsComponent } from './bookDetails/index';
+import { SendDataService } from './_services/data.service';
+import { CatalogComponent } from './catalog/index';
 
 @NgModule({
     imports: [
@@ -29,7 +33,11 @@ import { RegisterComponent } from './register/index';
         MainComponent,
         LoginComponent,
         RegisterComponent,
-        BookComponent
+        BookComponent,
+        BookDetailsComponent,
+        CatalogComponent
+
+        // Autosize
     ],
     providers: [
         customHttpProvider,
@@ -38,7 +46,8 @@ import { RegisterComponent } from './register/index';
         AuthenticationService,
         UserService,
         BookService,
-        EmitterService
+        EmitterService,
+        SendDataService
     ],
     bootstrap: [AppComponent]
 })

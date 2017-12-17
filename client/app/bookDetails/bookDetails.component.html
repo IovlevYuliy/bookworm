@@ -1,0 +1,65 @@
+<!-- <script src="https://rawgit.com/jackmoore/autosize/master/dist/autosize.min.js"></script>  -->
+<div class="container">
+    <div class="col-md-4 placeholder">
+            <img src={{bookDetails.image}} width="200" height="200" class="img-fluid rounded-circle" alt="Обложка книги">
+    </div>
+    <div class="col-md-8">
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label>Название</label>
+            </div>
+            <div class="col-md-9">
+                <input type="text" value={{bookDetails.name}} class="form-control" disabled/>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label>Автор(-ы)</label>
+            </div>
+            <div class="col-md-9">
+                <input type="text" value={{bookDetails.author}} class="form-control" disabled/>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label>Год издания</label>
+            </div>
+            <div class="col-md-9">
+                <input type="text" value={{bookDetails.publishedYear}} class="form-control" disabled/>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label>Аннотация</label>
+            </div>
+            <div class="col-md-9">
+            <textarea autosize class="form-control" disabled>
+                {{bookDetails.description}}
+            </textarea>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label>Можно купить</label>
+            </div>
+            <div class="col-md-9">
+                <a href={{bookDetails.link}}>{{bookDetails.link}}</a>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label>Рейтинг (Ваш / пользователей)</label>
+            </div>
+            <div class="col-md-9">
+                <span class="glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3">
+                <label>Ключевые слова</label>
+            </div>
+            <div class="col-md-9">
+            </div>
+        </div>
+    </div>
+</div>

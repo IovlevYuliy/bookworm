@@ -1,9 +1,11 @@
 <div id='book-container' class="book-container">
 	<div *ngFor="let book of books; let i = index;" class="book-item">
 		<div class=book-image-container>
-			<img *ngIf="book.thumbnail" class="book-image" src={{book.thumbnail}}>
-			<img *ngIf="!book.thumbnail" class="book-image" src="../../asserts/empty-book.png">
-				<!-- <button type="submit" (click) = "AddBook(book)" >Favourite</button> -->
+			<a routerLink="/bookDetails" routerLinkActive="active">
+				<img *ngIf="book.thumbnail" class="book-image" src={{book.thumbnail}} (click)="this._SendDataService.setData(book);SharedData=book.Title;">
+				<img *ngIf="!book.thumbnail" class="book-image" src={{book.thumbnail}} (click)="this._SendDataService.setData(book);SharedData=book.Title;">
+			</a>
+			<button (click)="AddBook(book)">favourite</button>
 		</div>
 		<span class= "book-title" title="{{book.title}}">
 			{{book.title}}
