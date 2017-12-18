@@ -7,6 +7,7 @@ var sql = require('mssql');
 service.find = find;
 service.AddInFavourite = AddInFavourite;
 service.getCatalog = getCatalog;
+service.GetBookStatus = GetBookStatus;
 
 module.exports = service;
 
@@ -182,6 +183,34 @@ function mysql_real_escape_string (str) {
                 return char + char; // prepends a backslash to backslash, percent,
                                     // and double/single quotes
         }
+    });
+}
+
+function GetBookStatus(userBook){
+    console.log('GetBookStatus');
+    var request = new sql.Request(connection);
+    var queryUserBookStatus = `select BookStatus.Status 
+                                from FavouriteBook join BookStatus on FavouriteBook.BookStatusId = BookStatus.BookStatusId 
+                                where (FavouriteBook.BookId  = '${userBook.bookid}')  and (FavouriteBook.UserId = '${userBook.userid}')`;
+    return new Promise(function (resolve, reject) {
+        return request.query(queryUserBookStatus, function (err, response) {
+            if (err) {
+                console.log(err);
+                reject(err);
+            }
+            else {
+                if (response.recordset.rowsAffected == 0 || response.recordset[0] == undefined)
+                {
+                    console.log(null);
+                    resolve(null);
+                }
+                else
+                {
+                    console.log(response.recordset[0].Status);
+                    resolve(response.recordset[0].Status);
+                }
+            }
+        });
     });
 }
 

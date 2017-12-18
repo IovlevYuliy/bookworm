@@ -26,6 +26,10 @@ export class BookService {
             user: currentUser
         }
     	return this.http.post('/books/favour', favouriteBook);
-	}
+    }
+    
+    getUserBookStatus(bookid: string, currentUser: User) {        
+        return this.http.get('/books/bookstatus?bookid='+bookid+'&userid='+currentUser).map((response: Response) => response.json());;
+    }
 
 }

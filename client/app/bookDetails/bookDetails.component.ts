@@ -28,8 +28,6 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
     }
 
     ngOnInit() {       
-        //здесь нужно еще получить статус книги, если есть.
-
         this.bookDetails = new BookDetails(
             '1',
             this.receivedData.title,
@@ -39,7 +37,17 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
             this.receivedData.link,
             this.receivedData.thumbnail
         );
-        this.bookDetails.status = "Заброшена";
+       // this.bookDetails.status = "Заброшена";
+
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+         this.bookService.getUserBookStatus(this.bookDetails._id, currentUser.UserId)
+             .subscribe(
+                 data => {
+                    this.bookDetails.status = "44";//присвоить тут ответ от сервера по идее
+                },
+               error => {
+                   //this.alertService.error(error);
+               });
     }
 
     ngAfterViewInit() {

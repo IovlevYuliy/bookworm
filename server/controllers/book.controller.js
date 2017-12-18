@@ -8,6 +8,7 @@ var url = require('url');
 router.get('/', findBook);
 router.post('/favour', AddFavourite);
 router.get('/catalog', getCatalog);
+riuter.get('/bookstatus', GetBookStatus);
 
 module.exports = router;
 
@@ -47,3 +48,15 @@ function AddFavourite(req, res)
         });
 }
 
+function GetBookStatus(req, res)
+{
+    var params = url.parse(req.url, true);
+    var query = params.query;
+    bookService.GetBookStatus(query.title)
+        .then(function (data) {
+            res.send(data);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
