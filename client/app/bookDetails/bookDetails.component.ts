@@ -40,14 +40,14 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
        // this.bookDetails.status = "Заброшена";
 
         let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-         this.bookService.getUserBookStatus(this.bookDetails._id, currentUser.UserId)
-             .subscribe(
-                 data => {
-                    this.bookDetails.status = "44";//присвоить тут ответ от сервера по идее
-                },
-               error => {
-                   //this.alertService.error(error);
-               });
+        //  this.bookService.getUserBookStatus(this.bookDetails._id, currentUser.UserId)
+        //      .subscribe(
+        //          data => {
+        //             this.bookDetails.status = "44";//присвоить тут ответ от сервера по идее
+        //         },
+        //        error => {
+        //            //this.alertService.error(error);
+        //        });
     }
 
     ngAfterViewInit() {
@@ -67,4 +67,21 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
         //             this.alertService.error(error);
         //         });
     }
+
+    mouseEnter(id : string){
+        var arr = Array.from(document.getElementsByClassName("user-rate"));
+        var rates = arr.filter(v => v.id <= id);
+        rates.forEach(element => {
+            element.classList.toggle('star-full'); 
+        });
+     }
+  
+     mouseLeave(id : string){
+        var arr = Array.from(document.getElementsByClassName("user-rate"));
+        var rates = arr.filter(v => v.id <= id);
+        rates.forEach(element => {
+            element.classList.toggle('star-full'); 
+        });
+     }
+
 }

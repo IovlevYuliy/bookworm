@@ -41,9 +41,15 @@
             </div>
             <div class="info-row">
                 <label>Рейтинг (Ваш / пользователей):</label>
-                <!-- <span class="detail glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span> -->
-                <img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"> / <img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png">
-                </div>
+                <div id="1" class="user-rate" (mouseenter) ="mouseEnter(1) "  (mouseleave) ="mouseLeave(1)"></div>
+                <div id="2" class="user-rate" (mouseenter) ="mouseEnter(2) "  (mouseleave) ="mouseLeave(2)"></div>
+                <div id="3" class="user-rate" (mouseenter) ="mouseEnter(3) "  (mouseleave) ="mouseLeave(3)"></div>
+                <div id="4" class="user-rate" (mouseenter) ="mouseEnter(4) "  (mouseleave) ="mouseLeave(4)"></div>
+                <div id="5" class="user-rate" (mouseenter) ="mouseEnter(5) "  (mouseleave) ="mouseLeave(5)"></div>
+                / 
+                <!-- Это подсчитываемая оценка.  <div class="user-rate"></div><div class="user-rate"></div><div class="user-rate"></div><div class="user-rate"></div><div class="user-rate"></div> -->
+                
+            </div>
 
             <div class="info-row">
                 <textarea autosize class="form-control" disabled>

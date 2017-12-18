@@ -8,7 +8,7 @@ var url = require('url');
 router.get('/', findBook);
 router.post('/favour', AddFavourite);
 router.get('/catalog', getCatalog);
-riuter.get('/bookstatus', GetBookStatus);
+router.get('/bookstatus', GetBookStatus);
 
 module.exports = router;
 
