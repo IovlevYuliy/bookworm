@@ -20,7 +20,7 @@
                     <label>Название: </label>
                 </div>
                 <div class="col-md-9">
-                    <input [(ngModel)]="bookDetails.name" type="text" class="form-control" />
+                    <input [(ngModel)]="bookDetails.title" type="text" class="form-control" />
                 </div>
             </div>
 
@@ -29,7 +29,7 @@
                     <label>Автор(-ы): </label>
                 </div>
                 <div class="col-md-9">
-                    <input [(ngModel)]="bookDetails.author" type="text" class="form-control" />
+                    <input [(ngModel)]="bookDetails.authors" type="text" class="form-control" />
                 </div>
             </div>
             <div class="info-row">
@@ -37,7 +37,7 @@
                     <label>Год издания: </label>
                 </div>
                 <div class="col-md-9">
-                    <input [(ngModel)]="bookDetails.publishedYear" type="number" min="1000" class="form-control" />
+                    <input [(ngModel)]="bookDetails.publishedDate" type="number" min="1000" class="form-control" />
                 </div>
             </div>
             <div class="info-row">

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions, Response } from '@angular/http';
+import { Http, Headers, RequestOptions, Response, URLSearchParams } from '@angular/http';
+import { HttpParams, HttpClient } from '@angular/common/http';
 
 import { Book, User } from '../_models/index';
 
@@ -16,11 +17,24 @@ export class BookService {
     }
 
     getCatalogBooks(){
-         return this.http.get('/books/catalog').map((response: Response) => response.json());
+        return this.http.get('/books/catalog').map((response: Response) => response.json());
+    }
+
+    getBookStatus(title: string, authors: string){
+        let params: URLSearchParams = new URLSearchParams();
+
+        params.set('title', title);
+        params.set('authors', authors);
+        params.set('userId',  JSON.parse(localStorage.getItem('currentUser')).UserId);
+
+        let requestOptions = new RequestOptions();
+        requestOptions.search = params;
+
+
+        return this.http.get('/books/bookDetails', requestOptions).map((response: Response) => response.json());
     }
 
     AddInFavourite(book: Book, currentUser: User) {
-        console.log(currentUser);
         let favouriteBook = {
             book: book,
             user: currentUser
@@ -37,4 +51,8 @@ export class BookService {
         return this.http.get("/books/bookrates").map((response: Response) => response.json());
         
     }
+    getBooksWithNewKeyWords(){
+        return this.http.get('/books/moderator').map((response: Response) => response.json());
+    }
+
 }

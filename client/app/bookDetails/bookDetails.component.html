@@ -1,20 +1,23 @@
 <div class="row book-container">
     <div class="col-md-3">
-        <img src={{bookDetails.image}} width="100%"  alt="Обложка книги"> 
+        <!-- <img src={{bookDetails.thumbnail}} width="100%"  alt="Обложка книги">  -->
+        <img *ngIf="bookDetails.thumbnail" src={{bookDetails.thumbnail}}  width="100%" alt="Обложка книги">
+        <img *ngIf="!bookDetails.thumbnail"  src="../../asserts/empty-book.png"  width="100%" alt="Обложка книги">
+
         <div class="center">
             <div class="btn-group">
-                <button type="button"  class="{{bookDetails.status ? 'btn btn-success btn-w-status center dropdown-toggle' : 'btn btn-success center dropdown-toggle'}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top:5px; margin-left: 15px;">
+                <button type="button"  class="{{bookDetails.status ? 'btn btn-success btn-w-status center dropdown-toggle' : 'btn btn-success center dropdown-toggle'}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top:5px;">
                    <span>{{bookDetails.status ? bookDetails.status : 'ДОБАВИТЬ'}}</span>
                 </button>
                 <div class="dropdown-menu">
                   <div class="{{(bookDetails.status=='Хочу прочесть') ? 'dropdown-item status-item status-item-checked' : 'dropdown-item status-item'}}" 
-                  (click)="AddBook(bookDetails,'9B86AD37-88ED-4CE7-9029-1030A42719F8')">Хочу прочесть</div>
+                  (click)="AddBook(bookDetails,'Хочу прочесть')">Хочу прочесть</div>
                   <div class="{{(bookDetails.status=='Читаю') ? 'dropdown-item status-item status-item-checked' : 'dropdown-item status-item'}}" 
-                  (click)="AddBook(bookDetails,'4BA77A47-7A4A-40D4-9643-DB856125F6B2')">Читаю</div>
+                  (click)="AddBook(bookDetails,'Читаю')">Читаю</div>
                   <div class="{{(bookDetails.status=='Прочитана') ? 'dropdown-item status-item status-item-checked' : 'dropdown-item status-item'}}" 
-                  (click)="AddBook(bookDetails,'8CBB414C-ED49-414B-8631-3DF4F92CD9C9')">Прочитана</div>
+                  (click)="AddBook(bookDetails,'Прочитана')">Прочитана</div>
                   <div class="{{(bookDetails.status=='Заброшена') ? 'dropdown-item status-item status-item-checked' : 'dropdown-item status-item'}}" 
-                  (click)="AddBook(bookDetails,'407FBC8A-9AB4-4DB4-9D9C-4D71B926593C')">Заброшена</div>
+                  (click)="AddBook(bookDetails,'Заброшена')">Заброшена</div>
                 </div>
               </div>
         </div>
@@ -29,15 +32,15 @@
     <div class="col-md-8">
         <div class="form-group row">                    
             <span class="book-title">
-                   {{bookDetails.name}}
+                   {{bookDetails.title}}
             </span>
         </div>
         <div class="info-block">
             <div class="info-row">            
-                    <label>Автор(-ы): </label> <i class="detail"> {{ bookDetails.author}}</i>            
+                    <label>Автор(-ы): </label> <i class="detail"> {{ bookDetails.authors}}</i>            
             </div>
             <div class="info-row">            
-                    <label>Год издания: </label> <span class="detail"> {{ bookDetails.publishedYear}}</span>            
+                    <label>Год издания: </label> <span class="detail"> {{ bookDetails.publishedDate}}</span>            
             </div>
             <div class="info-row">
                 <label>Рейтинг (Ваш / пользователей):</label>

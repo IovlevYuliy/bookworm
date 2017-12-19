@@ -1,11 +1,11 @@
 export class BookDetails {
     _id: string;
-    name: string;
+    title: string;
     description: string;
-    publishedYear: string;
+    publishedDate: string;
     authors: string;
     link: string;
-    image: string;
+    thumbnail: string;
     status: string;
     estimatedRating: number;
     ratingCount: number;
@@ -16,11 +16,11 @@ export class BookDetails {
     constructor(id: string, _name: string, _description: string, _publishedYear: string, _authors: string, _link: string, _image: string)
     {
         this._id = id;
-        this.name = _name;
+        this.title = _name;
         this.description =_description;
-        this.publishedYear = _publishedYear;
         this.authors = _authors;
+        this.publishedDate = _publishedYear;
         this.link = _link;
-        this.image = _image;
+        this.thumbnail = _image;
     }
 }
