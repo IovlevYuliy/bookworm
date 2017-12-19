@@ -51,15 +51,19 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
 
 
         /*получение оценок книги*/
-        this.bookService.getBookRates('700ab0cd-3ceb-4fad-b439-096f1916bd27',currentUser.UserId)
-             .subscribe(
-                 data => {
-                    this.bookDetails.status = "44";//присвоить тут ответ от сервера по идее
-                },
-               error => {
-                this.bookDetails.status ="0";
-                   //this.alertService.error(error);
-               });
+        // this.bookService.getBookRates('700ab0cd-3ceb-4fad-b439-096f1916bd27',currentUser.UserId)
+        //      .subscribe(
+        //          data => {
+        //             this.bookDetails.status = "44";
+        //         },
+        //        error => {
+        //         this.bookDetails.status ="0";
+        //        });
+
+        this.bookDetails.estimatedRating = 4;
+        this.bookDetails.userRating = 3;
+        this.setBookRate("user-rate", this.bookDetails.userRating);
+        this.setBookRate("avg-rate", this.bookDetails.estimatedRating);
     }
 
     ngAfterViewInit() {
@@ -80,22 +84,42 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
         //         });
     }
 
-    changeUserRateImage(id : string){
-        var arr = Array.from(document.getElementsByClassName("user-rate"));
-        var rates = arr.filter(v => v.id <= id);
-        rates.forEach(element => {
-            element.classList.toggle('star-full'); 
+    setBookRate (_className : string, _rate : number){
+        var arr = Array.from(document.getElementsByClassName(_className));
+        var r = String(Math.round(_rate));        
+        arr.forEach(element => {
+            if(element.id <= r) {
+                element.classList.toggle('star-full');               
+            }
         });
     }
 
-    mouseEnter(id : string){
-        this.changeUserRateImage(id);
-     }
+    changeUserRateImage(id : string){
+        var arr = Array.from(document.getElementsByClassName("user-rate"));
+        var rates;
+        if(Number(id) > this.bookDetails.userRating) {
+            rates = arr.filter(v => v.id <= id && Number(v.id) > this.bookDetails.userRating);
+        } 
+        else if(Number(id) < this.bookDetails.userRating) {
+            rates = arr.filter(v => Number(v.id) <=  this.bookDetails.userRating && v.id > id);
+        }
+        else {
+            return;
+        }
+        rates.forEach(element => {
+            if(element.id <= (Number(id) > this.bookDetails.userRating ? id : this.bookDetails.userRating) ) {
+                element.classList.toggle('star-full'); 
+            }            
+        });
+    }
 
-     mouseLeave(id : string){
-        this.changeUserRateImage(id);
-        //возвращать надо не к пустоте, а к выставленной оценке
-     }
+    // mouseEnter(id : string) {
+    //     this.changeUserRateImage(id);
+    //  }
+
+    //  mouseLeave(id : string) {
+    //     this.changeUserRateImage(id);
+    //  }
 
      AddRate(rateValue: string) {
          // rateValue - оценка пользователя
