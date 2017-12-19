@@ -8,8 +8,10 @@ var url = require('url');
 router.get('/', findBook);
 router.post('/favour', AddFavourite);
 router.get('/catalog', getCatalog);
-router.get('/bookDetails', getBookStatus);
+router.get('/bookstatus', GetBookStatus);
+router.get('/bookDetails', getBookInfo);
 router.get('/moderator', getBookWithNewKeyWords)
+
 
 module.exports = router;
 
@@ -26,12 +28,11 @@ function findBook(req, res)
         });
 }
 
-function getBookStatus(req, res)
+function getBookInfo(req, res)
 {
     var params = url.parse(req.url, true);
     var query = params.query;
-    console.log('qqqqqqqqq', query);
-     bookService.getBookStatus(query)
+     bookService.getBookInfo(query)
         .then(function (data) {
             res.send(data);
         })
@@ -76,3 +77,30 @@ function AddFavourite(req, res)
         });
 }
 
+function GetBookStatus(req, res)
+{
+    var params = url.parse(req.url, true);
+    var query = params.query;
+    bookService.GetBookStatus(query.title)
+        .then(function (data) {
+            res.send(data);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function getBookRates(req, res)
+{
+  //  var params = url.parse(req.url, true);
+  //  var query = params.query;
+    console.log('controller getBookRates');
+    res.send('1');
+    // bookService.getBookRates()
+    //     .then(function (data) {
+    //         res.send(data);
+    //     })
+    //     .catch(function (err) {
+    //         res.status(400).send(err);
+    //     });
+}

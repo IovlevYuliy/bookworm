@@ -8,7 +8,7 @@ service.find = find;
 service.AddInFavourite = AddInFavourite;
 service.getCatalog = getCatalog;
 service.getBookWithNewKeyWords = getBookWithNewKeyWords;
-service.getBookStatus = getBookStatus;
+service.getBookInfo = getBookInfo;
 
 module.exports = service;
 
@@ -20,14 +20,14 @@ function find(key) {
     });
 }
 
-function getBookStatus(book)
+function getBookInfo(book)
 {
     PrepareBook(book);
     var connection = new sql.ConnectionPool(config.dbConfig);
      return new Promise((resolve, reject) => {
         connection.connect()
             .then(() => {
-                return getStatus(connection, book.title, book.authors, book.userId);
+                return getInfo(connection, book.title, book.authors, book.userId);
             })
             .then((data) => {
                 connection.close();
@@ -40,10 +40,10 @@ function getBookStatus(book)
         });
 }
 
-function getStatus(connection, title, authors, userId)
+function getInfo(connection, title, authors, userId)
 {
     var request = new sql.Request(connection);
-    var queryGetStatus = `SELECT status from ((BookStatus BS inner join FavouriteBook FB on BS.BookStatusId = FB.BookStatusId) 
+    var queryGetStatus = `SELECT status, UserRating, RatingCount, EstimatedRating from ((BookStatus BS inner join FavouriteBook FB on BS.BookStatusId = FB.BookStatusId) 
             inner join Book B ON 
             B.BookId = FB.BookId) where B.title = '${title}' AND B.authors = '${authors}' AND FB.UserId = '${userId}'`;
     console.log(queryGetStatus);
@@ -55,14 +55,9 @@ function getStatus(connection, title, authors, userId)
                 reject(err);
             }
             else {
-                if (response.recordset.rowsAffected == 0 || response.recordset[0] == undefined)
-                    return resolve([]);
-                else
-                {
                     console.log(response);
                     resolve(response.recordset);
                 }
-            }
         });
     });
 }
@@ -359,5 +354,4 @@ function mysql_real_escape_string (str) {
         }
     });
 }
-
 

@@ -20,12 +20,12 @@ export class BookService {
         return this.http.get('/books/catalog').map((response: Response) => response.json());
     }
 
-    getBookStatus(title: string, authors: string){
+    getBookInfo(title: string, authors: string, userId: string){
         let params: URLSearchParams = new URLSearchParams();
 
         params.set('title', title);
         params.set('authors', authors);
-        params.set('userId',  JSON.parse(localStorage.getItem('currentUser')).UserId);
+        params.set('userId',  userId);
 
         let requestOptions = new RequestOptions();
         requestOptions.search = params;
@@ -40,8 +40,8 @@ export class BookService {
             user: currentUser
         }
     	return this.http.post('/books/favour', favouriteBook);
-	}
-
+    }
+   
     getBooksWithNewKeyWords(){
         return this.http.get('/books/moderator').map((response: Response) => response.json());
     }

@@ -44,9 +44,19 @@
             </div>
             <div class="info-row">
                 <label>Рейтинг (Ваш / пользователей):</label>
-                <!-- <span class="detail glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span> -->
-                <img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"> / <img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png">
-                </div>
+                <div id="1" title="Хочется развидеть" class="user-rate" (mouseenter) ="changeUserRateImage(1) "  (mouseleave) ="changeUserRateImage(1)" (click)="AddRate(1)"></div>
+                <div id="2" title="Не огонь" class="user-rate" (mouseenter) ="changeUserRateImage(2) "  (mouseleave) ="changeUserRateImage(2)" (click)="AddRate(2)"></div>
+                <div id="3" title="На безрыбье и рак рыба" class="user-rate" (mouseenter) ="changeUserRateImage(3) "  (mouseleave) ="changeUserRateImage(3)" (click)="AddRate(3)"></div>
+                <div id="4" title="Норм" class="user-rate" (mouseenter) ="changeUserRateImage(4) "  (mouseleave) ="changeUserRateImage(4)" (click)="AddRate(4)"></div>
+                <div id="5" title="Огонь" class="user-rate" (mouseenter) ="changeUserRateImage(5) "  (mouseleave) ="changeUserRateImage(5)" (click)="AddRate(5)"></div>
+                
+                / 
+                <div id="1" class="avg-rate"></div>
+                <div id="2" class="avg-rate"></div>
+                <div id="3" class="avg-rate"></div>
+                <div id="4" class="avg-rate"></div>
+                <div id="5" class="avg-rate"></div>   {{bookDetails.estimatedRating}}            
+            </div>
 
             <div class="info-row">
                 <textarea autosize class="form-control" disabled>
