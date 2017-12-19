@@ -20,12 +20,15 @@ import { SendDataService } from './_services/data.service';
 import { CatalogComponent } from './catalog/index';
 import { BooksWNewKeywordsListComponent } from './booksWNewKeywordsList/index';
 
+import { TagInputModule } from 'ng2-tag-input';
+
 @NgModule({
     imports: [
         BrowserModule,
         FormsModule,
         HttpModule,
-        routing
+        routing,
+        TagInputModule
     ],
     declarations: [
         AppComponent,
@@ -38,8 +41,6 @@ import { BooksWNewKeywordsListComponent } from './booksWNewKeywordsList/index';
         BookDetailsComponent,
         CatalogComponent,
         BooksWNewKeywordsListComponent
-        
-        // Autosize
     ],
     providers: [
         customHttpProvider,

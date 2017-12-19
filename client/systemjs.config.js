@@ -25,11 +25,25 @@
             '@angular/router': 'npm:@angular/router/bundles/router.umd.js',
             '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
 
+            'ng2-tag-input': 'npm:ng2-tag-input/',
+            'ng2-material-dropdown': 'npm:ng2-material-dropdown/',
             // other libraries
             'rxjs': 'npm:rxjs'
         },
         // packages tells the System loader how to load when no filename and/or no extension
         packages: {
+            'ng2-tag-input': {
+                main: 'dist/ng2-tag-input.bundle.js',
+                format: 'cjs',
+            },
+            'ng2-material-dropdown': {
+                defaultExtension: 'js',
+                main: 'dist/ng2-dropdown.bundle.js',
+                format: 'cjs',
+            },
+            'ng2-tag-input/modules/components/tag-input.template.html': {
+                defaultJSExtension: false
+            },
            
             app: {
                 main: './main.js',

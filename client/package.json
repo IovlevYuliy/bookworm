@@ -25,6 +25,7 @@
     "angular2-autosize": "^1.0.2",
     "bootstrap": "^3.3.7",
     "core-js": "^2.4.1",
+    "ng2-tag-input": "^1.4.1",
     "rxjs": "^5.2.0",
     "systemjs": "^0.19.47",
     "zone.js": "^0.8.5"
