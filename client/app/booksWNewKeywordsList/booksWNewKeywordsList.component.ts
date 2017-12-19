@@ -13,7 +13,9 @@ declare var autosize: any;
 })
 
 export class BooksWNewKeywordsListComponent implements OnInit {
-    books: BookDetails[] = [];
+   // books: BookDetails[] = [];
+    books: any;
+    keyWords = ['Pizza', 'Pasta', 'Parmesan'];
     constructor(
         private bookService: BookService,
         private route: ActivatedRoute) {
@@ -21,10 +23,11 @@ export class BooksWNewKeywordsListComponent implements OnInit {
 
     ngOnInit() {       
         this.loadBooksWithNewKeywords();
+
     }
     private loadBooksWithNewKeywords() {
-      //  this.bookService.getByName(this.title)
-    //        .subscribe(books => { this.books = books; console.log(this.books); });
+        this.bookService.getBooksWithNewKeyWords()
+            .subscribe(books => { this.books = books; console.log(this.books); });
     }
 
 }
