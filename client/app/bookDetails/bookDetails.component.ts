@@ -52,10 +52,10 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
         //         this.bookDetails.status ="0";
         //        });
 
-        this.bookDetails.estimatedRating = 4;
-        this.bookDetails.userRating = 3;
-        this.setBookRate("user-rate", this.bookDetails.userRating);
-        this.setBookRate("avg-rate", this.bookDetails.estimatedRating);
+        this.bookDetails.estimatedRating = 3;
+        this.bookDetails.userRating = 2;
+        this.changeRateImage(this.bookDetails.userRating, 0, "user-rate");
+        this.changeRateImage(this.bookDetails.estimatedRating, 0, "avg-rate");
     }
 
     ngAfterViewInit() {
@@ -68,30 +68,25 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
         let currentUser = JSON.parse(localStorage.getItem('currentUser'));
     }
 
-    setBookRate (_className : string, _rate : number){
-        var arr = Array.from(document.getElementsByClassName(_className));
-        var r = String(Math.round(_rate));        
-        arr.forEach(element => {
-            if(element.id <= r) {
-                element.classList.toggle('star-full');               
-            }
-        });
+    
+    changeUserRateImage(id : string){
+        this.changeRateImage(Number(id), this.bookDetails.userRating, "user-rate");
     }
 
-    changeUserRateImage(id : string){
-        var arr = Array.from(document.getElementsByClassName("user-rate"));
+    changeRateImage(newRate : number, oldRate : number, rateClassName : string){
+        var arr = Array.from(document.getElementsByClassName(rateClassName));
         var rates;
-        if(Number(id) > this.bookDetails.userRating) {
-            rates = arr.filter(v => v.id <= id && Number(v.id) > this.bookDetails.userRating);
+        if(newRate > oldRate) {
+            rates = arr.filter(v => Number(v.id) <= newRate && Number(v.id) > oldRate);
         } 
-        else if(Number(id) < this.bookDetails.userRating) {
-            rates = arr.filter(v => Number(v.id) <=  this.bookDetails.userRating && v.id > id);
+        else if(newRate < oldRate) {
+            rates = arr.filter(v => Number(v.id) <=  oldRate && Number(v.id) > newRate);
         }
         else {
             return;
         }
         rates.forEach(element => {
-            if(element.id <= (Number(id) > this.bookDetails.userRating ? id : this.bookDetails.userRating) ) {
+            if(Number(element.id) <= (newRate > oldRate ? newRate : oldRate) ) {
                 element.classList.toggle('star-full'); 
             }            
         });
@@ -105,8 +100,14 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
          else {
             this.bookDetails.userRating = Number(rateValue);
          }
-         this.changeUserRateImage(String(this.bookDetails.userRating));
-         
+       //  this.changeUserRateImage(String(this.bookDetails.userRating));
+         this.changeRateImage(this.bookDetails.userRating, this.bookDetails.userRating, "user-rate");
          //и тут надо при выставлении оценки менять статус на "прочитано"
+        
+         
+         var newAvgRate = this.bookDetails.estimatedRating - 1;/*тут еще происходит пересчет средней оценки книги */
+         /* и отображение оценки меняется */
+         this.changeRateImage(newAvgRate, this.bookDetails.estimatedRating, "avg-rate");
+         this.bookDetails.estimatedRating = newAvgRate;
      }
 }
