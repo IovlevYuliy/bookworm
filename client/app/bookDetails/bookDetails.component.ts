@@ -68,20 +68,27 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
         //         });
     }
 
+    changeUserRateImage(id : string){
+        var arr = Array.from(document.getElementsByClassName("user-rate"));
+        var rates = arr.filter(v => v.id <= id);
+        rates.forEach(element => {
+            element.classList.toggle('star-full'); 
+        });
+    }
+
     mouseEnter(id : string){
-        var arr = Array.from(document.getElementsByClassName("user-rate"));
-        var rates = arr.filter(v => v.id <= id);
-        rates.forEach(element => {
-            element.classList.toggle('star-full'); 
-        });
-     }
-  
-     mouseLeave(id : string){
-        var arr = Array.from(document.getElementsByClassName("user-rate"));
-        var rates = arr.filter(v => v.id <= id);
-        rates.forEach(element => {
-            element.classList.toggle('star-full'); 
-        });
+        this.changeUserRateImage(id);
      }
 
+     mouseLeave(id : string){
+        this.changeUserRateImage(id);
+        //возвращать надо не к пустоте, а к выставленной оценке
+     }
+
+     AddRate(rateValue: string) {
+         // rateValue - оценка пользователя
+         //возможно, тут стоит сделать проверку - если у пользователя уже стоит такая сохраненная оценка, надо сбросить оценку вообще.
+         //на одном из сайтов именно так и работает.
+         //и тут надо при выставлении оценки менять статус на "прочитано"
+     }
 }

@@ -7,6 +7,9 @@ export class BookDetails {
     link: string;
     image: string;
     status: string;
+    EstimatedRating: string;
+    RatingCount: string;
+    UserRating: string;
 
   //  keywords: Keyword[];
 
