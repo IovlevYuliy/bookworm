@@ -238,7 +238,7 @@ function AddBook(connection, book)
         book.publishedDate = null;
     var queryInsertBook = `insert into Book(title, authors, link, thumbnail, publishedDate, description, EstimatedRating) OUTPUT Inserted.BookId values
             ('${book.title}', '${book.authors}', '${book.link}', '${book.thumbnail}', ${book.publishedDate},
-             '${book.description}', 1)`;
+             '${book.description}', '${book.estimatedRating}')`;
 
     console.log(queryInsertBook);
     var request = new sql.Request(connection);
