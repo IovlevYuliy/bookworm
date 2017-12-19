@@ -40,15 +40,7 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
        // this.bookDetails.status = "Заброшена";
 
         let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        //  this.bookService.getUserBookStatus(this.bookDetails._id, currentUser.UserId)
-        //      .subscribe(
-        //          data => {
-        //             this.bookDetails.status = "44";//присвоить тут ответ от сервера по идее
-        //         },
-        //        error => {
-        //            //this.alertService.error(error);
-        //        });
-
+        /*получение статуса книги */
 
         /*получение оценок книги*/
         // this.bookService.getBookRates('700ab0cd-3ceb-4fad-b439-096f1916bd27',currentUser.UserId)
@@ -74,14 +66,6 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
     AddBook(book:BookDetails, statusId: string)
     {
         let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        // this.bookService.AddInFavourite(book, currentUser)
-        //     .subscribe(
-        //         data => {
-        //             this.alertService.success('Книга успешно добавлена в избранное', true);
-        //         },
-        //         error => {
-        //             this.alertService.error(error);
-        //         });
     }
 
     setBookRate (_className : string, _rate : number){
@@ -113,18 +97,16 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
         });
     }
 
-    // mouseEnter(id : string) {
-    //     this.changeUserRateImage(id);
-    //  }
-
-    //  mouseLeave(id : string) {
-    //     this.changeUserRateImage(id);
-    //  }
-
      AddRate(rateValue: string) {
-         // rateValue - оценка пользователя
-         //возможно, тут стоит сделать проверку - если у пользователя уже стоит такая сохраненная оценка, надо сбросить оценку вообще.
-         //на одном из сайтов именно так и работает.
+         //если у пользователя уже стоит такая сохраненная оценка, надо сбросить оценку вообще.         
+         if(this.bookDetails.userRating === Number(rateValue)) {
+            this.bookDetails.userRating = 0;
+         }
+         else {
+            this.bookDetails.userRating = Number(rateValue);
+         }
+         this.changeUserRateImage(String(this.bookDetails.userRating));
+         
          //и тут надо при выставлении оценки менять статус на "прочитано"
      }
 }
