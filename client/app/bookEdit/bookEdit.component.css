@@ -4,12 +4,11 @@
 	margin-right: 10%; 
 }
 .info-row{
+    display: flex;
     padding: 5px;
-    /* border:1px solid #ced4da;
-    border-radius: .30rem; */
     margin-bottom: 0.5rem;
 }
-.info-block{
+.book-border{
     background-color:rgba(212, 228, 245, 0.4);
     border:1px solid #ced4da;
     border-radius: .30rem; 
@@ -23,17 +22,5 @@
 }
 div.center{
     margin: auto;
-    width: 50%;
-} 
-
-.status-item{
-    cursor: pointer;
-}
-
-.status-item-checked{
-    border:2px solid rgb(12, 110, 96);
-}
-.btn-w-status{
-    background-color: rgb(12, 110, 96);
-    border:2px solid rgb(57, 136, 124);
+    width: 50%;	
 }

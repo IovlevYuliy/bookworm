@@ -8,6 +8,8 @@ var url = require('url');
 router.get('/', findBook);
 router.post('/favour', AddFavourite);
 router.get('/catalog', getCatalog);
+router.get('/bookDetails', getBookStatus);
+router.get('/moderator', getBookWithNewKeyWords)
 
 module.exports = router;
 
@@ -23,6 +25,33 @@ function findBook(req, res)
             res.status(400).send(err);
         });
 }
+
+function getBookStatus(req, res)
+{
+    var params = url.parse(req.url, true);
+    var query = params.query;
+    console.log('qqqqqqqqq', query);
+     bookService.getBookStatus(query)
+        .then(function (data) {
+            res.send(data);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function getBookWithNewKeyWords(req, res)
+{
+     console.log('getBookWithNewKeyWords');
+     bookService.getBookWithNewKeyWords()
+        .then(function (data) {
+            res.send(data);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
 
 function getCatalog(req, res)
 {

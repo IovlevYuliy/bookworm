@@ -1,65 +1,64 @@
-<!-- <script src="https://rawgit.com/jackmoore/autosize/master/dist/autosize.min.js"></script>  -->
-<div class="container">
-    <div class="col-md-4 placeholder">
-            <img src={{bookDetails.image}} width="200" height="200" class="img-fluid rounded-circle" alt="Обложка книги">
+<div class="row book-container">
+    <div class="col-md-3">
+        <!-- <img src={{bookDetails.thumbnail}} width="100%"  alt="Обложка книги">  -->
+        <img *ngIf="bookDetails.thumbnail" src={{bookDetails.thumbnail}}  width="100%" alt="Обложка книги">
+        <img *ngIf="!bookDetails.thumbnail"  src="../../asserts/empty-book.png"  width="100%" alt="Обложка книги">
+
+        <div class="center">
+            <div class="btn-group">
+                <button type="button"  class="{{bookDetails.status ? 'btn btn-success btn-w-status center dropdown-toggle' : 'btn btn-success center dropdown-toggle'}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="margin-top:5px;">
+                   <span>{{bookDetails.status ? bookDetails.status : 'ДОБАВИТЬ'}}</span>
+                </button>
+                <div class="dropdown-menu">
+                  <div class="{{(bookDetails.status=='Хочу прочесть') ? 'dropdown-item status-item status-item-checked' : 'dropdown-item status-item'}}" 
+                  (click)="AddBook(bookDetails,'Хочу прочесть')">Хочу прочесть</div>
+                  <div class="{{(bookDetails.status=='Читаю') ? 'dropdown-item status-item status-item-checked' : 'dropdown-item status-item'}}" 
+                  (click)="AddBook(bookDetails,'Читаю')">Читаю</div>
+                  <div class="{{(bookDetails.status=='Прочитана') ? 'dropdown-item status-item status-item-checked' : 'dropdown-item status-item'}}" 
+                  (click)="AddBook(bookDetails,'Прочитана')">Прочитана</div>
+                  <div class="{{(bookDetails.status=='Заброшена') ? 'dropdown-item status-item status-item-checked' : 'dropdown-item status-item'}}" 
+                  (click)="AddBook(bookDetails,'Заброшена')">Заброшена</div>
+                </div>
+              </div>
+        </div>
+        <div class="info-row" style="margin-top:20px">
+            Купить:
+        </div>
+        <div class="info-row">
+            <a href={{bookDetails.link}}>{{bookDetails.link}}</a>
+        </div>
+         
     </div>
     <div class="col-md-8">
-        <div class="form-group row">
-            <div class="col-md-3">
-                <label>Название</label>
-            </div>
-            <div class="col-md-9">
-                <input type="text" value={{bookDetails.name}} class="form-control" disabled/>
-            </div>
+        <div class="form-group row">                    
+            <span class="book-title">
+                   {{bookDetails.title}}
+            </span>
         </div>
-        <div class="form-group row">
-            <div class="col-md-3">
-                <label>Автор(-ы)</label>
+        <div class="info-block">
+            <div class="info-row">            
+                    <label>Автор(-ы): </label> <i class="detail"> {{ bookDetails.authors}}</i>            
             </div>
-            <div class="col-md-9">
-                <input type="text" value={{bookDetails.author}} class="form-control" disabled/>
+            <div class="info-row">            
+                    <label>Год издания: </label> <span class="detail"> {{ bookDetails.publishedDate}}</span>            
             </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-md-3">
-                <label>Год издания</label>
+            <div class="info-row">
+                <label>Рейтинг (Ваш / пользователей):</label>
+                <!-- <span class="detail glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span> -->
+                <img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"> / <img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png"><img src="https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png">
+                </div>
+
+            <div class="info-row">
+                <textarea autosize class="form-control" disabled>
+                    {{bookDetails.description}}
+                </textarea>           
             </div>
-            <div class="col-md-9">
-                <input type="text" value={{bookDetails.publishedYear}} class="form-control" disabled/>
+            <div class="info-row">
+                <label>Ключевые слова:</label>
+                <div class="col-md-9">
+
+                </div>
             </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-md-3">
-                <label>Аннотация</label>
-            </div>
-            <div class="col-md-9">
-            <textarea autosize class="form-control" disabled>
-                {{bookDetails.description}}
-            </textarea>
-            </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-md-3">
-                <label>Можно купить</label>
-            </div>
-            <div class="col-md-9">
-                <a href={{bookDetails.link}}>{{bookDetails.link}}</a>
-            </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-md-3">
-                <label>Рейтинг (Ваш / пользователей)</label>
-            </div>
-            <div class="col-md-9">
-                <span class="glyphicon glyphicon-star-empty"></span><span class="glyphicon glyphicon-star-empty"></span>
-            </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-md-3">
-                <label>Ключевые слова</label>
-            </div>
-            <div class="col-md-9">
-            </div>
-        </div>
+        </div> 
     </div>
 </div>

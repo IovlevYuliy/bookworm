@@ -1,22 +1,23 @@
 export class BookDetails {
     _id: string;
-    name: string;
+    title: string;
     description: string;
-    publishedYear: string;
-    author: string;
+    publishedDate: string;
+    authors: string;
     link: string;
-    image: string;
+    thumbnail: string;
+    status: string;
 
   //  keywords: Keyword[];
 
     constructor(id: string, _name: string, _description: string, _publishedYear: string, _author: string, _link: string, _image: string)
     {
         this._id = id;
-        this.name = _name;
+        this.title = _name;
         this.description =_description;
-        this.publishedYear = _publishedYear;
-        this.author = _author;
+        this.publishedDate = _publishedYear;
+        this.authors = _author;
         this.link = _link;
-        this.image = _image;
+        this.thumbnail = _image;
     }
 }

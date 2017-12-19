@@ -11,7 +11,7 @@ import { EmitterService } from './_services/index';
 
 export class AppComponent implements OnInit{
 	book = {
-        name: ""
+        title: ""
     };
     subscription: any;
     currentUser: any;
