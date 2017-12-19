@@ -29,19 +29,7 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
 
     ngOnInit() {       
         //здесь нужно еще получить статус книги, если есть.
-       console.log('getstatus');
-        this.bookService.getBookStatus(this.receivedData.title, this.receivedData.authors)
-            .subscribe(
-                data => {
-                    console.log('statusIs: ', data);
-                    if (data.length != 0)
-                        this.bookDetails.status = data[0].status;
-                },
-                error => {
-                    this.alertService.error(error);
-                });
-
-
+        
         this.bookDetails = new BookDetails(
             '1',
             this.receivedData.title,
@@ -55,19 +43,26 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
 
         let currentUser = JSON.parse(localStorage.getItem('currentUser'));
         /*получение статуса книги */
+        this.bookService.getBookInfo(this.receivedData.title, this.receivedData.authors, currentUser.UserId)
+            .subscribe(
+                data => {
+                    console.log('statusIs: ', data);
+                    if (data.length != 0)
+                    {
+                        this.bookDetails.status = data[0].status;
+                        this.bookDetails.estimatedRating = data[0].EstimatedRating;
+                        this.bookDetails.userRating = data[0].UserRating;
+                        this.bookDetails.ratingCount = data[0].RatingCount;
+                    }
+                },
+                error => {
+                    this.alertService.error(error);
+                });
 
-        /*получение оценок книги*/
-        // this.bookService.getBookRates('700ab0cd-3ceb-4fad-b439-096f1916bd27',currentUser.UserId)
-        //      .subscribe(
-        //          data => {
-        //             this.bookDetails.status = "44";
-        //         },
-        //        error => {
-        //         this.bookDetails.status ="0";
-        //        });
 
-        this.bookDetails.estimatedRating = 3;
-        this.bookDetails.userRating = 2;
+
+        // this.bookDetails.estimatedRating = 3;
+        // this.bookDetails.userRating = 2;
         this.changeRateImage(this.bookDetails.userRating, 0, "user-rate");
         this.changeRateImage(this.bookDetails.estimatedRating, 0, "avg-rate");
     }

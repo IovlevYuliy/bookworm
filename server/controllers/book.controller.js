@@ -9,8 +9,7 @@ router.get('/', findBook);
 router.post('/favour', AddFavourite);
 router.get('/catalog', getCatalog);
 router.get('/bookstatus', GetBookStatus);
-router.get('/bookrates', getBookRates);
-router.get('/bookDetails', getBookStatus);
+router.get('/bookDetails', getBookInfo);
 router.get('/moderator', getBookWithNewKeyWords)
 
 
@@ -29,12 +28,11 @@ function findBook(req, res)
         });
 }
 
-function getBookStatus(req, res)
+function getBookInfo(req, res)
 {
     var params = url.parse(req.url, true);
     var query = params.query;
-    console.log('qqqqqqqqq', query);
-     bookService.getBookStatus(query)
+     bookService.getBookInfo(query)
         .then(function (data) {
             res.send(data);
         })
