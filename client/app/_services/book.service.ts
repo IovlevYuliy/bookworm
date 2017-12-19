@@ -32,4 +32,9 @@ export class BookService {
         return this.http.get('/books/bookstatus?bookid='+bookid+'&userid='+currentUser).map((response: Response) => response.json());;
     }
 
+    getBookRates(bookid: string, userid:string){
+        // return this.http.get("/books/bookrates?bookid='"+bookid+"'&userid='"+userid+"'").map((response: Response) => response.json());
+        return this.http.get("/books/bookrates").map((response: Response) => response.json());
+        
+    }
 }

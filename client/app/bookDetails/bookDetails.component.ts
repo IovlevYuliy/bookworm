@@ -48,6 +48,18 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
         //        error => {
         //            //this.alertService.error(error);
         //        });
+
+
+        /*получение оценок книги*/
+        this.bookService.getBookRates('700ab0cd-3ceb-4fad-b439-096f1916bd27',currentUser.UserId)
+             .subscribe(
+                 data => {
+                    this.bookDetails.status = "44";//присвоить тут ответ от сервера по идее
+                },
+               error => {
+                this.bookDetails.status ="0";
+                   //this.alertService.error(error);
+               });
     }
 
     ngAfterViewInit() {

@@ -9,6 +9,7 @@ router.get('/', findBook);
 router.post('/favour', AddFavourite);
 router.get('/catalog', getCatalog);
 router.get('/bookstatus', GetBookStatus);
+router.get('/bookrates', getBookRates);
 
 module.exports = router;
 
@@ -59,4 +60,19 @@ function GetBookStatus(req, res)
         .catch(function (err) {
             res.status(400).send(err);
         });
+}
+
+function getBookRates(req, res)
+{
+  //  var params = url.parse(req.url, true);
+  //  var query = params.query;
+    console.log('controller getBookRates');
+    res.send('1');
+    // bookService.getBookRates()
+    //     .then(function (data) {
+    //         res.send(data);
+    //     })
+    //     .catch(function (err) {
+    //         res.status(400).send(err);
+    //     });
 }

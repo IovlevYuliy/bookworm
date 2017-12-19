@@ -3,23 +3,23 @@ export class BookDetails {
     name: string;
     description: string;
     publishedYear: string;
-    author: string;
+    authors: string;
     link: string;
     image: string;
     status: string;
-    EstimatedRating: string;
-    RatingCount: string;
-    UserRating: string;
+    estimatedRating: string;
+    ratingCount: string;
+    userRating: string;
 
   //  keywords: Keyword[];
 
-    constructor(id: string, _name: string, _description: string, _publishedYear: string, _author: string, _link: string, _image: string)
+    constructor(id: string, _name: string, _description: string, _publishedYear: string, _authors: string, _link: string, _image: string)
     {
         this._id = id;
         this.name = _name;
         this.description =_description;
         this.publishedYear = _publishedYear;
-        this.author = _author;
+        this.authors = _authors;
         this.link = _link;
         this.image = _image;
     }

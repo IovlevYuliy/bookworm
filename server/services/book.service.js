@@ -214,4 +214,9 @@ function GetBookStatus(userBook){
     });
 }
 
+function GetBookRates() {
+    console.log('GetBookRates');
+    return '1';
+}
+
 
