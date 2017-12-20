@@ -46,4 +46,11 @@ export class BookService {
         return this.http.get('/books/moderator').map((response: Response) => response.json());
     }
 
+    getFavouriteBooksStatistics(userId: string) {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('userId',  userId);
+        let requestOptions = new RequestOptions();
+        requestOptions.search = params;
+        return this.http.get('/books/favebooksstat', requestOptions).map((response: Response) => response.json());
+    }
 }

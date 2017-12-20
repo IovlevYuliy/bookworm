@@ -1,5 +1,7 @@
 import { ViewChild, Component, ElementRef, OnInit } from '@angular/core';
-
+import { ActivatedRoute } from '@angular/router';
+// import { BookDetails } from '../_models/index';
+import { BookService, AlertService } from '../_services/index';
  declare var Chart: any;
 
 @Component({
@@ -8,19 +10,33 @@ import { ViewChild, Component, ElementRef, OnInit } from '@angular/core';
 })
 
 export class MainComponent {
-    constructor() { }
+    constructor(private bookService: BookService,
+        private route: ActivatedRoute,
+        private alertService: AlertService) { }
 
 	@ViewChild('chart') chartDOM: ElementRef;
 
     ngOnInit() {
-
-        let donutCtx = this.chartDOM.nativeElement.getContext('2d');
-
-        var data = {
-            labels: ["Хочу прочесть", "Читаю", "Прочитано", "Заброшено"],
+		let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+		this.bookService.getFavouriteBooksStatistics(currentUser.UserId)
+		.subscribe(
+			data => {
+				if (data.length != 0)
+				{
+					this.drawChart(Array.from(data, (v, k) => v.BooksCount));
+				}
+			},
+			error => {
+				this.alertService.error(error);
+			});
+	} 
+	drawChart(userBooksStatistics : Array<Number>) {
+		let donutCtx = this.chartDOM.nativeElement.getContext('2d');		
+		var data = {
+            labels: ["Читаю", "Хочу прочесть", "Прочитано", "Заброшено"],
             datasets: [{
 		            label: 'Количество книг',
-		            data: [12, 2, 6, 1],
+		            data: userBooksStatistics,
 		            backgroundColor: [
 		                'rgba(255, 99, 132, 0.2)',
 		                'rgba(54, 162, 235, 0.2)',
@@ -28,7 +44,7 @@ export class MainComponent {
 		                'rgba(75, 192, 192, 0.2)'
 		            ],
 		            borderColor: [
-		                'rgba(255,99,132,1)',
+		                'rgba(255, 99, 132, 1)',
 		                'rgba(54, 162, 235, 1)',
 		                'rgba(255, 206, 86, 1)',
 		                'rgba(75, 192, 192, 1)'
@@ -46,14 +62,14 @@ export class MainComponent {
 			    "options": {
 				"maintainAspectRatio": false,
 			        "scales": {
-			            "yAxes": [{
+						"xAxes": [{
 			                "ticks": {
 			                    "beginAtZero":true
 			                }
-			            }]
+						}]
 			        }
 			    }
             }
         );
-    }
+	}
 }

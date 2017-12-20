@@ -9,6 +9,7 @@ service.AddInFavourite = AddInFavourite;
 service.getCatalog = getCatalog;
 service.getBookWithNewKeyWords = getBookWithNewKeyWords;
 service.getBookInfo = getBookInfo;
+service.getFaveBooksStat = getFaveBooksStat;
 
 module.exports = service;
 
@@ -17,6 +18,45 @@ function find(key) {
         books.search(key, function(error, results) {
             return error ? reject(error) : resolve(results);
         });
+    });
+}
+
+function getFaveBooksStat(userId){
+    var connection = new sql.ConnectionPool(config.dbConfig);
+  //  var request = new sql.Request(connection);
+    
+    // console.log(queryfaveStat);
+
+    return new Promise((resolve, reject) => {
+        connection.connect()
+            .then(() =>{
+                var request = new sql.Request(connection);
+                var queryfaveStat = `SELECT       -- BookStatus.Status, 
+                                                   count(FavouriteBook.BookStatusId) BooksCount
+                                    FROM            FavouriteBook INNER JOIN
+                                                            BookStatus ON FavouriteBook.BookStatusId = BookStatus.BookStatusId
+                                    WHERE        (FavouriteBook.UserId = '${userId}')
+                                    group by FavouriteBook.UserId, BookStatus.Status 
+                                    order by BookStatus.Status desc`;
+                    
+                return new Promise(function (resolve, reject) {
+                    return request.query(queryfaveStat, function (err, response) {
+                        if (err) {
+                            console.log(err);
+                            reject(err);
+                        }
+                        else {
+                            resolve(response.recordset);
+                        }
+                    });
+                });
+            })
+            .then((data) => {
+                resolve(data);
+            })
+            .catch((err) => {
+                reject(err);
+            })
     });
 }
 
