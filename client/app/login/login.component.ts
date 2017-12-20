@@ -34,11 +34,12 @@ export class LoginComponent implements OnInit {
         this.authenticationService.login(this.model.login, this.model.password)
             .subscribe(
                 data => {
+                    console.log('login', data);
                     this.router.navigate([this.returnUrl]);
                     this.emitterService.emitNavChangeEvent(data);
                 },
                 error => {
-                    this.alertService.error(error);
+                    this.alertService.error('Вы неверно ввели логин или пароль');
                     this.loading = false;
                 });
     }
