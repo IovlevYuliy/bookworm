@@ -17,6 +17,7 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
     bookDetails: BookDetails;
     bookId: any;//какой у нас тип идентификаторов?
     receivedData: any;
+    avgRating: any;
 
     constructor(
         private bookService: BookService,
@@ -37,9 +38,11 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
             this.receivedData.publishedDate,
             this.receivedData.authors,
             this.receivedData.link,
-            this.receivedData.thumbnail
+            this.receivedData.thumbnail, 
+            this.receivedData.EstimatedRating, 
+            this.receivedData.RatingCount,
+            0
         );
-       // this.bookDetails.status = "Заброшена";
 
         let currentUser = JSON.parse(localStorage.getItem('currentUser'));
         /*получение статуса книги */
@@ -50,21 +53,27 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
                     if (data.length != 0)
                     {
                         this.bookDetails.status = data[0].status;
+                        console.log('estrat', data[0].EstimatedRating);
                         this.bookDetails.estimatedRating = data[0].EstimatedRating;
                         this.bookDetails.userRating = data[0].UserRating;
                         this.bookDetails.ratingCount = data[0].RatingCount;
+
+                        this.changeRateImage(this.bookDetails.userRating, 0, "user-rate");
+                        this.changeRateImage(this.bookDetails.estimatedRating/(this.bookDetails.ratingCount===0?1:this.bookDetails.ratingCount), 0, "avg-rate");
+                    }
+                    else
+                    {
+                        this.bookDetails.estimatedRating = 0;
+                        this.bookDetails.userRating = 0;
+                        this.bookDetails.ratingCount = 0;
                     }
                 },
                 error => {
                     this.alertService.error(error);
                 });
-
-
-
-        // this.bookDetails.estimatedRating = 3;
-        // this.bookDetails.userRating = 2;
-        this.changeRateImage(this.bookDetails.userRating, 0, "user-rate");
-        this.changeRateImage(this.bookDetails.estimatedRating, 0, "avg-rate");
+                this.avgRating = Math.round(this.bookDetails.estimatedRating / (this.bookDetails.ratingCount==0?1:this.bookDetails.ratingCount) * 100) / 100;
+        //this.changeRateImage(this.bookDetails.userRating, 0, "user-rate");
+        //this.changeRateImage(this.bookDetails.estimatedRating/(this.bookDetails.ratingCount===0?1:this.bookDetails.ratingCount), 0, "avg-rate");
     }
 
     ngAfterViewInit() {
@@ -79,6 +88,8 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
         this.bookService.AddInFavourite(book, currentUser)
             .subscribe(
                 data => {
+                    console.log('addbookresult', data);
+                    this.bookDetails.bookId = data.bookId;
                     this.alertService.success('Книга успешно добавлена в избранное со статусом «' + status + '»', true);
                 },
                 error => {
@@ -92,6 +103,9 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
     }
 
     changeRateImage(newRate : number, oldRate : number, rateClassName : string){
+        console.log('changeRateImage', newRate, oldRate, rateClassName);
+        newRate = Math.round(newRate);
+        oldRate = Math.round(oldRate);
         var arr = Array.from(document.getElementsByClassName(rateClassName));
         var rates;
         if(newRate > oldRate) {
@@ -103,6 +117,7 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
         else {
             return;
         }
+        console.log('rates', rates);
         rates.forEach(element => {
             if(Number(element.id) <= (newRate > oldRate ? newRate : oldRate) ) {
                 element.classList.toggle('star-full'); 
@@ -112,20 +127,37 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
 
      AddRate(rateValue: string) {
          //если у пользователя уже стоит такая сохраненная оценка, надо сбросить оценку вообще.         
+         var newSumRate;
+         var newRatingCount;
          if(this.bookDetails.userRating === Number(rateValue)) {
+            newSumRate = this.bookDetails.estimatedRating - this.bookDetails.userRating;
+            newRatingCount = this.bookDetails.ratingCount - 1;
             this.bookDetails.userRating = 0;
          }
          else {
+            newSumRate = this.bookDetails.estimatedRating - this.bookDetails.userRating + Number(rateValue);
+            if(this.bookDetails.userRating === 0) {
+                newRatingCount = this.bookDetails.ratingCount + 1;
+                /*тут оценка выставляется впервые. нужно добавлять книгу в избранное со статусом "Прочитано"*/
+                this.AddBook(this.bookDetails, 'Прочитана');
+            }
+            else {
+                newRatingCount = this.bookDetails.ratingCount;
+            }
             this.bookDetails.userRating = Number(rateValue);
          }
-       //  this.changeUserRateImage(String(this.bookDetails.userRating));
          this.changeRateImage(this.bookDetails.userRating, this.bookDetails.userRating, "user-rate");
-         //и тут надо при выставлении оценки менять статус на "прочитано"
-        
-         
-         var newAvgRate = this.bookDetails.estimatedRating - 1;/*тут еще происходит пересчет средней оценки книги */
-         /* и отображение оценки меняется */
-         this.changeRateImage(newAvgRate, this.bookDetails.estimatedRating, "avg-rate");
-         this.bookDetails.estimatedRating = newAvgRate;
+                  
+         this.changeRateImage(newSumRate / (newRatingCount===0?1:newRatingCount), 
+                              this.bookDetails.estimatedRating / (this.bookDetails.ratingCount===0?1:this.bookDetails.ratingCount),
+                               "avg-rate");
+         this.bookDetails.estimatedRating = newSumRate;
+         this.bookDetails.ratingCount = newRatingCount;
+
+         /* Вот теперь тут закидываем в базу оценку. Модель готова */
+        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+        this.AddBook(this.bookDetails, this.bookDetails.status);
+        this.avgRating = Math.round(this.bookDetails.estimatedRating / (this.bookDetails.ratingCount==0?1:this.bookDetails.ratingCount) * 100) / 100;
      }
 }

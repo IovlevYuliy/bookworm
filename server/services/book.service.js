@@ -149,12 +149,15 @@ function AddInFavourite(favouriteBook) {
                 if (!book_id)
                     return AddBook(connection, favouriteBook.book);
                 else
-                    return Promise.resolve(book_id);
+                {
+                    // return Promise.resolve(book_id);
+                    favouriteBook.book.BookId = book_id;
+                    return updateBook(connection, favouriteBook.book);
+                }
             })
             .then((book_id) => {
                 favouriteBookInfo.book_id = book_id;
                 return CheckFavouriteBook(connection, book_id, favouriteBook.user.UserId);
-                
             })
             .then((IsFavExists) => {
                 favouriteBookInfo.IsFavExists = IsFavExists;
@@ -168,9 +171,12 @@ function AddInFavourite(favouriteBook) {
                 else
                     return UpdateFavouriteBook(connection, favouriteBookInfo.book_id, favouriteBook, favouriteBookInfo.statusId);
             })
-            .then(() => {
+            .then((book_id) => {
                 connection.close();
-                resolve();
+                let bookId = {
+                    bookId: book_id
+                }
+                resolve(bookId);
             })
             .catch((err) => {
                 connection.close();
@@ -207,6 +213,30 @@ function CheckBook(connection, book)
     });
 }
 
+function updateBook(connection, book)
+{
+    console.log('UpdateBook', book);
+    var request = new sql.Request(connection);
+
+    var queryUpdateBook = `UPDATE Book SET title = '${book.title}', authors = '${book.authors}', 
+    description = '${book.description}', EstimatedRating = ${book.estimatedRating}, RatingCount = ${book.ratingCount}
+    where BookId =  '${book.BookId}'`;
+    
+    console.log(queryUpdateBook);
+
+    return new Promise(function (resolve, reject) {
+        return request.query(queryUpdateBook, function (err, response) {
+            if (err) {
+                console.log(err);
+                reject(err);
+            }
+            else {
+                resolve(book.BookId);
+            }
+        });
+    });
+}
+
 function CheckFavouriteBook(connection, book_id, userId)
 {
     console.log('CheckFavouriteBook');
@@ -222,6 +252,7 @@ function CheckFavouriteBook(connection, book_id, userId)
                 reject(err);
             }
             else {
+                console.log('aaaaaaaaaaaa', response);
                 if (response.recordset.rowsAffected == 0 || response.recordset[0] == undefined || response.recordset[0] == null)
                     resolve(false);
                 else
@@ -238,7 +269,7 @@ function AddBook(connection, book)
         book.publishedDate = null;
     var queryInsertBook = `insert into Book(title, authors, link, thumbnail, publishedDate, description, EstimatedRating) OUTPUT Inserted.BookId values
             ('${book.title}', '${book.authors}', '${book.link}', '${book.thumbnail}', ${book.publishedDate},
-             '${book.description}', 1)`;
+             '${book.description}', '${book.estimatedRating}')`;
 
     console.log(queryInsertBook);
     var request = new sql.Request(connection);
@@ -258,7 +289,7 @@ function AddBook(connection, book)
 function AddBookFavourite(connection, bookId, favourBook, statusId)
 {
     console.log('AddFavourite');
-    var queryInsertFavouriteBook = `insert into FavouriteBook(UserId, BookId, BookStatusId, UserRating) values
+    var queryInsertFavouriteBook = `insert into FavouriteBook(UserId, BookId, BookStatusId, UserRating)  OUTPUT Inserted.BookId values
             ('${favourBook.user.UserId}', '${bookId}', '${statusId}', 0)`;
 
 
@@ -272,7 +303,7 @@ function AddBookFavourite(connection, bookId, favourBook, statusId)
                 return reject(err);
             }
             console.log('addedFav');
-            return resolve();
+            return resolve(bookId);
         });
     });
 }
@@ -280,7 +311,8 @@ function AddBookFavourite(connection, bookId, favourBook, statusId)
 function UpdateFavouriteBook(connection, bookId, favourBook, statusId)
 {
     console.log('UpdateFavourite', bookId, favourBook);
-    var queryUpdateFavouriteBook = `UPDATE FavouriteBook SET BookStatusId = '${statusId}' where
+    var queryUpdateFavouriteBook = `UPDATE FavouriteBook SET BookStatusId = '${statusId}', 
+    UserRating = ${favourBook.book.userRating} where
     UserId = '${favourBook.user.UserId}' AND BookId = '${bookId}'`;
 
 
@@ -293,8 +325,8 @@ function UpdateFavouriteBook(connection, bookId, favourBook, statusId)
                 console.log(queryUpdateFavouriteBook, err);
                 return reject(err);
             }
-            console.log('UpdateFav');
-            return resolve();
+            console.log('UpdateFav', bookId);
+            return resolve(bookId);
         });
     });
 }
