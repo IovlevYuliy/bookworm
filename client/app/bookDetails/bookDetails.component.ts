@@ -55,7 +55,6 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
                         this.bookDetails.ratingCount = data[0].RatingCount;
 
                         this.changeRateImage(this.bookDetails.userRating, 0, "user-rate");
-                        this.changeRateImage(this.bookDetails.estimatedRating/(this.bookDetails.ratingCount===0?1:this.bookDetails.ratingCount), 0, "avg-rate");
                     }
                 },
                 error => {
