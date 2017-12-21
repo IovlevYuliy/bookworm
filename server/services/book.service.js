@@ -31,13 +31,6 @@ function getFaveBooksStat(userId){
         connection.connect()
             .then(() =>{
                 var request = new sql.Request(connection);
-                // var queryfaveStat = `SELECT        BookStatus.Status, 
-                //                                    count(FavouriteBook.BookStatusId) BooksCount
-                //                     FROM            FavouriteBook INNER JOIN
-                //                                             BookStatus ON FavouriteBook.BookStatusId = BookStatus.BookStatusId
-                //                     WHERE        (FavouriteBook.UserId = '${userId}')
-                //                     group by FavouriteBook.UserId, BookStatus.Status 
-                //                     order by BookStatus.Status desc`;
                 var queryfaveStat = `select max(t.readNow) readNow, max(t.wantToRead) wantToRead, max(t.alreadyRead) alreadyRead, max(t.gaveUp) gaveUp
                                 from (
                                     SELECT 
@@ -47,7 +40,7 @@ function getFaveBooksStat(userId){
                                 count(case when FavouriteBook.BookStatusId = '407FBC8A-9AB4-4DB4-9D9C-4D71B926593C'then FavouriteBook.BookStatusId else null end) gaveUp
                                     FROM            FavouriteBook INNER JOIN
                                                             BookStatus ON FavouriteBook.BookStatusId = BookStatus.BookStatusId
-                                    WHERE        (FavouriteBook.UserId = '8320e1ec-2b93-4be4-a62a-bf38e00ad611')
+                                    WHERE        (FavouriteBook.UserId = '${userId}')
                                     GROUP BY FavouriteBook.UserId, BookStatus.Status
                                 )t`;    
                 return new Promise(function (resolve, reject) {
