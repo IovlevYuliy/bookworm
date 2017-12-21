@@ -1,8 +1,8 @@
-var config = require('config.json');
 var express = require('express');
 var router = express.Router();
 var bookService = require('services/book.service');
 var url = require('url');
+var logger = require('../log');
 
 // routes
 router.get('/', findBook);
@@ -32,7 +32,7 @@ function getBookInfo(req, res)
 {
     var params = url.parse(req.url, true);
     var query = params.query;
-     bookService.getBookInfo(query)
+    bookService.getBookInfo(query)
         .then(function (data) {
             res.send(data);
         })
@@ -43,8 +43,9 @@ function getBookInfo(req, res)
 
 function getBookWithNewKeyWords(req, res)
 {
-     console.log('getBookWithNewKeyWords');
-     bookService.getBookWithNewKeyWords()
+    logger.debug('getBookWithNewKeyWords');
+
+    bookService.getBookWithNewKeyWords()
         .then(function (data) {
             res.send(data);
         })
@@ -56,8 +57,9 @@ function getBookWithNewKeyWords(req, res)
 
 function getCatalog(req, res)
 {
-    console.log('getCatalog');
-     bookService.getCatalog()
+    logger.debug('getCatalog');
+
+    bookService.getCatalog()
         .then(function (data) {
             res.send(data);
         })
@@ -69,8 +71,8 @@ function getCatalog(req, res)
 function AddFavourite(req, res)
 {
     bookService.AddInFavourite(req.body)
-        .then(function () {
-            res.sendStatus(200);
+        .then(function (data) {
+            res.status(200).send(data);
         })
         .catch(function (err) {
             res.status(400).send(err);
@@ -83,7 +85,7 @@ function GetBookStatus(req, res)
     var query = params.query;
     bookService.GetBookStatus(query.title)
         .then(function (data) {
-            res.send(data);
+            res.send(200, data);
         })
         .catch(function (err) {
             res.status(400).send(err);
@@ -94,7 +96,7 @@ function getBookRates(req, res)
 {
   //  var params = url.parse(req.url, true);
   //  var query = params.query;
-    console.log('controller getBookRates');
+    logger.debug('getBookRates');
     res.send('1');
     // bookService.getBookRates()
     //     .then(function (data) {

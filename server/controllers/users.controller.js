@@ -1,11 +1,11 @@
-﻿var config = require('config.json');
-var express = require('express');
+﻿var express = require('express');
 var router = express.Router();
 var userService = require('services/user.service');
 
 // routes
 router.post('/authenticate', authenticate);
 router.post('/register', register);
+router.post('/token', token);
 router.get('/', getAll);
 router.get('/current', getCurrent);
 router.put('/:_id', update);
@@ -18,7 +18,6 @@ function authenticate(req, res) {
         .then(function (user) {
             if (user) {
                 // authentication successful
-                console.log('auth', user);
                 res.send(user);
             } else {
                 // authentication failed
@@ -78,6 +77,16 @@ function _delete(req, res) {
     userService.delete(req.params._id)
         .then(function () {
             res.sendStatus(200);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function token(req, res) {
+    userService.getToken(req.body.login, req.body.password)
+        .then(function (token) {
+            res.status(200).send(token);
         })
         .catch(function (err) {
             res.status(400).send(err);
