@@ -32,6 +32,10 @@
         },
         // packages tells the System loader how to load when no filename and/or no extension
         packages: {
+            'angular2-tag-input': {
+                main: 'dist/index.js',
+                format: 'cjs'
+            },
             // 'ng2-tag-input': {
             //     main: 'dist/ng2-tag-input.bundle.js',
             //     format: 'cjs',
