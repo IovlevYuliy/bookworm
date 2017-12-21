@@ -20,7 +20,9 @@ import { SendDataService } from './_services/data.service';
 import { CatalogComponent } from './catalog/index';
 import { BooksWNewKeywordsListComponent } from './booksWNewKeywordsList/index';
 
-import { TagInputModule } from 'ng2-tag-input';
+import {RlTagInputModule} from 'angular2-tag-input';
+ 
+// Import the library
 
 @NgModule({
     imports: [
@@ -28,7 +30,9 @@ import { TagInputModule } from 'ng2-tag-input';
         FormsModule,
         HttpModule,
         routing,
-        TagInputModule
+        RlTagInputModule
+
+    // Specify the library as an import
     ],
     declarations: [
         AppComponent,

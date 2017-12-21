@@ -14,20 +14,45 @@ declare var autosize: any;
 
 export class BooksWNewKeywordsListComponent implements OnInit {
    // books: BookDetails[] = [];
-    books: any;
-    keyWords = ['Pizza', 'Pasta', 'Parmesan'];
+    books: any[];
+    keyWordsBooks: object = {};
+    tags = ['qq', 'abc'];
     constructor(
         private bookService: BookService,
         private route: ActivatedRoute) {
     }
 
     ngOnInit() {       
-        this.loadBooksWithNewKeywords();
-
+        this.loadBooksWithNewKeywords()
     }
+
+    private unionKeyWords()
+    {
+        for (var i = this.books.length - 1; i >= 0; i--) {
+            console.log('forr', this.books);
+            let bookId = this.books[i].BookId[0];
+            let keyWord = {
+                wordId : this.books[i].KeyWordId[0],
+                word: this.books[i].Word
+            }
+           
+            if (!this.keyWordsBooks[bookId])
+                this.keyWordsBooks[bookId] = [];
+
+            this.keyWordsBooks[bookId].push(keyWord);
+              console.log('forrsss', this.keyWordsBooks);
+        }
+    }
+
     private loadBooksWithNewKeywords() {
         this.bookService.getBooksWithNewKeyWords()
-            .subscribe(books => { this.books = books; console.log(this.books); });
+            .subscribe(books => { 
+                this.books = books; 
+                console.log(this.books);
+                this.unionKeyWords();  
+            });
+
     }
+
 
 }
