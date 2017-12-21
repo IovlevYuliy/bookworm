@@ -53,4 +53,12 @@ export class BookService {
         requestOptions.search = params;
         return this.http.get('/books/favebooksstat', requestOptions).map((response: Response) => response.json());
     }
+
+    // getByBookId(_id:string) {
+    //     let params: URLSearchParams = new URLSearchParams();
+    //     params.set('id',  _id);
+    //     let requestOptions = new RequestOptions();
+    //     requestOptions.search = params;
+    //     return this.http.get('/findid', requestOptions).map((response: Response) => response.json());
+    // }
 }

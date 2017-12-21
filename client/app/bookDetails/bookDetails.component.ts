@@ -15,7 +15,6 @@ declare var autosize: any;
 
 export class BookDetailsComponent implements OnInit, AfterViewInit{
     bookDetails: BookDetails;
-    bookId: any;//какой у нас тип идентификаторов?
     receivedData: any;
 
     constructor(
@@ -27,9 +26,7 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
         console.log('Details', this.receivedData);
     }
 
-    ngOnInit() {       
-        //здесь нужно еще получить статус книги, если есть.
-        
+    ngOnInit() {  
         this.bookDetails = new BookDetails(
             '1',
             this.receivedData.title,
@@ -51,7 +48,8 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
                     console.log('statusIs: ', data);
                     if (data.length != 0)
                     {
-                        this.bookDetails.status = data[0].status;
+                        this.bookDetails._id = data[0].BookId;
+                        this.bookDetails.status = data[0].Status;
                         this.bookDetails.estimatedRating = data[0].EstimatedRating;
                         this.bookDetails.userRating = data[0].UserRating;
                         this.bookDetails.ratingCount = data[0].RatingCount;

@@ -23,10 +23,6 @@ function find(key) {
 
 function getFaveBooksStat(userId){
     var connection = new sql.ConnectionPool(config.dbConfig);
-  //  var request = new sql.Request(connection);
-    
-    // console.log(queryfaveStat);
-
     return new Promise((resolve, reject) => {
         connection.connect()
             .then(() =>{
@@ -87,9 +83,17 @@ function getBookInfo(book)
 function getInfo(connection, title, authors, userId)
 {
     var request = new sql.Request(connection);
-    var queryGetStatus = `SELECT status, UserRating, RatingCount, EstimatedRating from ((BookStatus BS inner join FavouriteBook FB on BS.BookStatusId = FB.BookStatusId) 
-            inner join Book B ON 
-            B.BookId = FB.BookId) where B.title = '${title}' AND B.authors = '${authors}' AND FB.UserId = '${userId}'`;
+    // var queryGetStatus = `SELECT B.BookId, status, UserRating, RatingCount, EstimatedRating from ((BookStatus BS inner join FavouriteBook FB on BS.BookStatusId = FB.BookStatusId) 
+    //         inner join Book B ON 
+    //         B.BookId = FB.BookId) where B.title = '${title}' AND B.authors = '${authors}' AND FB.UserId = '${userId}'`;
+    var queryGetStatus = `select B.BookId, FB.Status, FB.UserRating, B.RatingCount, B.EstimatedRating
+            from Book B left join 
+                ( select FB.BookId, FB.UserRating, BS.Status, FB.UserId
+                from FavouriteBook FB inner join
+                        BookStatus BS on FB.BookStatusId = BS.BookStatusId 
+                where FB.UserId = '${userId}'
+                ) FB on B.BookId = FB.BookId 
+            where B.title = '${title}' AND B.authors = '${authors}'`;
     console.log(queryGetStatus);
 
     return new Promise(function (resolve, reject) {

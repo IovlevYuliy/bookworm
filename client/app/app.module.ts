@@ -19,6 +19,7 @@ import { BookDetailsComponent } from './bookDetails/index';
 import { SendDataService } from './_services/data.service';
 import { CatalogComponent } from './catalog/index';
 import { BooksWNewKeywordsListComponent } from './booksWNewKeywordsList/index';
+import { BookEditComponent } from './bookEdit/index';
 
 @NgModule({
     imports: [
@@ -37,8 +38,8 @@ import { BooksWNewKeywordsListComponent } from './booksWNewKeywordsList/index';
         BookComponent,
         BookDetailsComponent,
         CatalogComponent,
-        BooksWNewKeywordsListComponent
-        
+        BooksWNewKeywordsListComponent,
+        BookEditComponent
         // Autosize
     ],
     providers: [

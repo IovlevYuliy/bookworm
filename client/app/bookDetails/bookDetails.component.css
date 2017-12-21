@@ -66,3 +66,7 @@ div.center{
 .star-full { 
     background-image: url(https://s.livelib.ru/img/skins/ll2015b/star-l-orange.png);
 }
+
+.right{
+    float: right;
+}

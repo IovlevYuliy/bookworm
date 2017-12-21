@@ -36,8 +36,9 @@
             </span>
         </div>
         <div class="info-block">
-            <div class="info-row">            
-                    <label>Автор(-ы): </label> <i class="detail"> {{ bookDetails.authors}}</i>            
+            <div class="info-row">
+                <label>Автор(-ы): </label> <i class="detail"> {{ bookDetails.authors}}</i>
+                <a class="btn btn-sm btn-info right" [routerLink]="['/bookEdit', bookDetails._id]">Редактировать</a>
             </div>
             <div class="info-row">            
                     <label>Год издания: </label> <span class="detail"> {{ bookDetails.publishedDate}}</span>            
