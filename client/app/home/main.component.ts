@@ -23,7 +23,10 @@ export class MainComponent {
 			data => {
 				if (data.length != 0)
 				{
-					this.drawChart(Array.from(data, (v, k) => v.BooksCount));
+					this.drawChart([data[0].readNow, data[0].wantToRead, data[0].alreadyRead, data[0].gaveUp]);
+				}
+				else{
+					this.drawChart([0,0,0,0]);
 				}
 			},
 			error => {

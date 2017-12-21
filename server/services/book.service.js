@@ -31,14 +31,25 @@ function getFaveBooksStat(userId){
         connection.connect()
             .then(() =>{
                 var request = new sql.Request(connection);
-                var queryfaveStat = `SELECT       -- BookStatus.Status, 
-                                                   count(FavouriteBook.BookStatusId) BooksCount
+                // var queryfaveStat = `SELECT        BookStatus.Status, 
+                //                                    count(FavouriteBook.BookStatusId) BooksCount
+                //                     FROM            FavouriteBook INNER JOIN
+                //                                             BookStatus ON FavouriteBook.BookStatusId = BookStatus.BookStatusId
+                //                     WHERE        (FavouriteBook.UserId = '${userId}')
+                //                     group by FavouriteBook.UserId, BookStatus.Status 
+                //                     order by BookStatus.Status desc`;
+                var queryfaveStat = `select max(t.readNow) readNow, max(t.wantToRead) wantToRead, max(t.alreadyRead) alreadyRead, max(t.gaveUp) gaveUp
+                                from (
+                                    SELECT 
+                                count(case when FavouriteBook.BookStatusId = '4BA77A47-7A4A-40D4-9643-DB856125F6B2'then FavouriteBook.BookStatusId else null end) readNow,
+                                count(case when FavouriteBook.BookStatusId = '9B86AD37-88ED-4CE7-9029-1030A42719F8'then FavouriteBook.BookStatusId else null end) wantToRead,
+                                count(case when FavouriteBook.BookStatusId = '8CBB414C-ED49-414B-8631-3DF4F92CD9C9'then FavouriteBook.BookStatusId else null end) alreadyRead,
+                                count(case when FavouriteBook.BookStatusId = '407FBC8A-9AB4-4DB4-9D9C-4D71B926593C'then FavouriteBook.BookStatusId else null end) gaveUp
                                     FROM            FavouriteBook INNER JOIN
                                                             BookStatus ON FavouriteBook.BookStatusId = BookStatus.BookStatusId
-                                    WHERE        (FavouriteBook.UserId = '${userId}')
-                                    group by FavouriteBook.UserId, BookStatus.Status 
-                                    order by BookStatus.Status desc`;
-                    
+                                    WHERE        (FavouriteBook.UserId = '8320e1ec-2b93-4be4-a62a-bf38e00ad611')
+                                    GROUP BY FavouriteBook.UserId, BookStatus.Status
+                                )t`;    
                 return new Promise(function (resolve, reject) {
                     return request.query(queryfaveStat, function (err, response) {
                         if (err) {
