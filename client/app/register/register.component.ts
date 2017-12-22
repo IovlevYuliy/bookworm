@@ -22,8 +22,17 @@ export class RegisterComponent {
         this.userService.create(this.model)
             .subscribe(
                 data => {
-                    this.alertService.success('Регистрация прошла успешно', true);
-                    this.router.navigate(['/login']);
+                    console.log('ddddd', data);
+                    if (data.isExist == false)
+                    {
+                        this.alertService.success('Регистрация прошла успешно', true);
+                        this.router.navigate(['/login']);
+                    }
+                    else
+                    {
+                        this.alertService.success('Регистрация не пройдена. Пользователь с данным логином уже существует', true);
+                        this.loading = false;
+                    }
                 },
                 error => {
                     this.alertService.error(error);

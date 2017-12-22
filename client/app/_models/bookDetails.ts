@@ -1,5 +1,6 @@
 export class BookDetails {
     _id: string;
+    bookId: string;
     title: string;
     description: string;
     publishedDate: string;

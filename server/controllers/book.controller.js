@@ -71,7 +71,6 @@ function getBookWithNewKeyWords(req, res)
         });
 }
 
-
 function getCatalog(req, res)
 {
     console.log('getCatalog');
@@ -87,8 +86,8 @@ function getCatalog(req, res)
 function AddFavourite(req, res)
 {
     bookService.AddInFavourite(req.body)
-        .then(function () {
-            res.sendStatus(200);
+        .then(function (data) {
+            res.send(data);
         })
         .catch(function (err) {
             res.status(400).send(err);
@@ -106,19 +105,4 @@ function GetBookStatus(req, res)
         .catch(function (err) {
             res.status(400).send(err);
         });
-}
-
-function getBookRates(req, res)
-{
-  //  var params = url.parse(req.url, true);
-  //  var query = params.query;
-    console.log('controller getBookRates');
-    res.send('1');
-    // bookService.getBookRates()
-    //     .then(function (data) {
-    //         res.send(data);
-    //     })
-    //     .catch(function (err) {
-    //         res.status(400).send(err);
-    //     });
 }

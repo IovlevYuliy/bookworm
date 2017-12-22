@@ -9,7 +9,6 @@ export class SendDataService {
   }
 
   setData (data: Book) {
-  	console.log('servNastya', data);
     this.sharedData = data;
   }
   getData () {
