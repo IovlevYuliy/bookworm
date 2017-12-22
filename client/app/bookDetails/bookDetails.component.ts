@@ -17,6 +17,8 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
     bookDetails: BookDetails;
     receivedData: any;
     avgRating: any;
+    private sub: any;
+    bookid:string;
 
     constructor(
         private bookService: BookService,
@@ -28,6 +30,14 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
     }
 
     ngOnInit() {  
+        // this.sub = this.route
+        // .queryParams
+        // .subscribe(params => {
+        //   // Defaults to 0 if no query param provided.
+        //   this.bookid = params['bookid'] || '1';
+        // });
+
+
         this.bookDetails = new BookDetails(
             '1',
             this.receivedData.title,
@@ -56,6 +66,7 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
                         this.bookDetails.ratingCount = data[0].RatingCount;
 
                         this.changeRateImage(this.bookDetails.userRating, 0, "user-rate");
+                        this.changeRateImage(this.bookDetails.estimatedRating/(this.bookDetails.ratingCount===0?1:this.bookDetails.ratingCount), 0, "avg-rate");
                     }
                     else
                     {
@@ -67,9 +78,7 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
                 error => {
                     this.alertService.error(error);
                 });
-                this.avgRating = Math.round(this.bookDetails.estimatedRating / (this.bookDetails.ratingCount==0?1:this.bookDetails.ratingCount) * 100) / 100;
-        //this.changeRateImage(this.bookDetails.userRating, 0, "user-rate");
-        //this.changeRateImage(this.bookDetails.estimatedRating/(this.bookDetails.ratingCount===0?1:this.bookDetails.ratingCount), 0, "avg-rate");
+        this.avgRating = Math.round(this.bookDetails.estimatedRating / (this.bookDetails.ratingCount==0?1:this.bookDetails.ratingCount) * 100) / 100;
     }
 
     ngAfterViewInit() {
@@ -92,7 +101,6 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
                     this.alertService.error(error);
                 });
     }
-
     
     changeUserRateImage(id : string){
         this.changeRateImage(Number(id), this.bookDetails.userRating, "user-rate");
@@ -125,27 +133,26 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
          //если у пользователя уже стоит такая сохраненная оценка, надо сбросить оценку вообще.         
          var newSumRate;
          var newRatingCount;
-         if(this.bookDetails.userRating === Number(rateValue)) {
+         if(Math.round(this.bookDetails.userRating) === Number(rateValue)) {
             newSumRate = this.bookDetails.estimatedRating - this.bookDetails.userRating;
             newRatingCount = this.bookDetails.ratingCount - 1;
             this.bookDetails.userRating = 0;
          }
          else {
-            newSumRate = this.bookDetails.estimatedRating - this.bookDetails.userRating + Number(rateValue);
-            if(this.bookDetails.userRating === 0) {
+            newSumRate = this.bookDetails.estimatedRating - Math.round(this.bookDetails.userRating) + Number(rateValue);
+            if(Math.round(this.bookDetails.userRating) === 0) {
                 newRatingCount = this.bookDetails.ratingCount + 1;
-                /*тут оценка выставляется впервые. нужно добавлять книгу в избранное со статусом "Прочитано"*/
-                this.AddBook(this.bookDetails, 'Прочитана');
+                this.bookDetails.status = 'Прочитана';
             }
             else {
                 newRatingCount = this.bookDetails.ratingCount;
             }
             this.bookDetails.userRating = Number(rateValue);
          }
-         this.changeRateImage(this.bookDetails.userRating, this.bookDetails.userRating, "user-rate");
+         this.changeRateImage(this.bookDetails.userRating, this.bookDetails.userRating, "user-rate");     
                   
          this.changeRateImage(newSumRate / (newRatingCount===0?1:newRatingCount), 
-                              this.bookDetails.estimatedRating / (this.bookDetails.ratingCount===0?1:this.bookDetails.ratingCount),
+                              this.bookDetails.estimatedRating / (this.bookDetails.ratingCount === 0 ? 1 : this.bookDetails.ratingCount),
                                "avg-rate");
          this.bookDetails.estimatedRating = newSumRate;
          this.bookDetails.ratingCount = newRatingCount;
