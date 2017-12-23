@@ -9,6 +9,7 @@ import { BookDetailsComponent } from './bookDetails/index';
 import { CatalogComponent } from './catalog/index';
 import { BooksWNewKeywordsListComponent } from './booksWNewKeywordsList/index';
 import { BookEditComponent } from './bookEdit/index';
+import { FavouriteBooksComponent } from './favouriteBooks/index';
 
 const appRoutes: Routes = [
     { path: 'index', component: MainComponent },
@@ -20,6 +21,7 @@ const appRoutes: Routes = [
     { path: 'books/catalog', component: CatalogComponent },
     { path: 'books/moderator', component:  BooksWNewKeywordsListComponent},
     { path: 'bookEdit/:id', component: BookEditComponent},
+    { path: 'favouriteBooks/:statusId', component: FavouriteBooksComponent},
     // otherwise redirect to home
     { path: '**', redirectTo: 'index' },
 ];

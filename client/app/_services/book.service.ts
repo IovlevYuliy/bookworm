@@ -55,11 +55,20 @@ export class BookService {
         return this.http.get('/books/favebooksstat', requestOptions).map((response: Response) => response.json());
     }
 
-    // getByBookId(_id:string) {
-    //     let params: URLSearchParams = new URLSearchParams();
-    //     params.set('id',  _id);
-    //     let requestOptions = new RequestOptions();
-    //     requestOptions.search = params;
-    //     return this.http.get('/findid', requestOptions).map((response: Response) => response.json());
-    // }
+    getFavouriteBooksList(userId: string, statusId:string){
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('userId',  userId);
+        params.set('statusId', statusId);
+        let requestOptions = new RequestOptions();
+        requestOptions.search = params;
+        return this.http.get('/books/favebookslist', requestOptions).map((response: Response) => response.json());        
+    }
+
+    getStatusNameById(statusId:string) {
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('statusId',  statusId);
+        let requestOptions = new RequestOptions();
+        requestOptions.search = params;        
+        return this.http.get('/books/statusname', requestOptions);    
+    }
 }

@@ -33,7 +33,7 @@
               <div class="carousel-caption text-right">
                 <h1>Избранное</h1>
                 <p>Здесь находятся книги, которые вы так или иначе выделили для себя. Переходите сюда для просмотра и управления списками ваших книг.</p>
-                <p><a class="btn btn-lg btn-warning" href="#" role="button">Перейти к избранному</a></p>
+                <button class="btn btn-lg btn-warning" (click)="scrollTo('fave')">Перейти к избранному</button>           
               </div>
             </div>
           </div>
@@ -48,8 +48,14 @@
         </a>
       </div>
       <div class="container marketing">
-        <div class="row">
-          <canvas #chart width="400" height="400"></canvas>		  
+          <div style="text-align: center;">
+              <div style="width: 500px; margin: 0 auto;">
+                <h5 id="fave"><i>Книги в Вашем избранном</i></h5>
+                <small>чтобы перейти к интересующему разделу - кликните на него</small>
+              </div>
+          </div>
+        <div class="row">          
+          <canvas #chart width="400" height="400" onClick="myFunction()"></canvas>		  
         </div>
       </div>
 

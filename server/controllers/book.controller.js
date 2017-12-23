@@ -11,7 +11,9 @@ router.get('/catalog', getCatalog);
 router.get('/bookstatus', GetBookStatus);
 router.get('/bookDetails', getBookInfo);
 router.get('/moderator', getBookWithNewKeyWords);
-router.get('/favebooksstat',getFaveBooksStat)
+router.get('/favebooksstat',getFaveBooksStat);
+router.get('/favebookslist',getFaveBooksList);
+router.get('/statusname', getStatusNameById);
 
 module.exports = router;
 
@@ -32,9 +34,7 @@ function getFaveBooksStat(req, res)
 {
     var params = url.parse(req.url, true);
     var query = params.query;
-    console.log('getFaveBooksStat');
-    // console.log(query);   
-    
+    console.log('getFaveBooksStat');    
     bookService.getFaveBooksStat(query.userId)
         .then(function (data) {
             console.log(data);  
@@ -44,6 +44,31 @@ function getFaveBooksStat(req, res)
             console.log(err);  
             res.status(400).send(err);
         });
+}
+
+function getFaveBooksList(req, res){
+    var params = url.parse(req.url, true);
+    var query = params.query; 
+    bookService.getFavouriteBooksList(query)
+    .then(function (data) {
+        res.send(data);
+    })
+    .catch(function (err) {
+        res.status(400).send(err);
+    });
+}
+
+function getStatusNameById(req, res) {
+    var params = url.parse(req.url, true);
+    var query = params.query; 
+    console.log(query); 
+    bookService.getStatusNameById(query.statusId)
+    .then(function (data) {
+        res.send(data);
+    })
+    .catch(function (err) {
+        res.status(400).send(err);
+    });
 }
 
 function getBookInfo(req, res)

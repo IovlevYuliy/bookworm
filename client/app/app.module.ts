@@ -20,6 +20,7 @@ import { SendDataService } from './_services/data.service';
 import { CatalogComponent } from './catalog/index';
 import { BooksWNewKeywordsListComponent } from './booksWNewKeywordsList/index';
 import { BookEditComponent } from './bookEdit/index';
+import { FavouriteBooksComponent } from './favouriteBooks/index';
 
 @NgModule({
     imports: [
@@ -39,7 +40,8 @@ import { BookEditComponent } from './bookEdit/index';
         BookDetailsComponent,
         CatalogComponent,
         BooksWNewKeywordsListComponent,
-        BookEditComponent
+        BookEditComponent,
+        FavouriteBooksComponent
         // Autosize
     ],
     providers: [

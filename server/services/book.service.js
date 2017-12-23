@@ -10,6 +10,8 @@ service.getCatalog = getCatalog;
 service.getBookWithNewKeyWords = getBookWithNewKeyWords;
 service.getBookInfo = getBookInfo;
 service.getFaveBooksStat = getFaveBooksStat;
+service.getFavouriteBooksList = getFavouriteBooksList;
+service.getStatusNameById = getStatusNameById;
 
 module.exports = service;
 
@@ -396,6 +398,71 @@ function GetStatusIdByName(connection, statusName)
             console.log(response.recordset[0].BookStatusId);
             return resolve(response.recordset[0].BookStatusId);
         });
+    });
+}
+
+function getStatusNameById(statusId)
+{
+    console.log('inner service getStatusNameById');
+    var connection = new sql.ConnectionPool(config.dbConfig);
+    return new Promise((resolve, reject) => {
+        connection.connect()
+            .then(() =>{
+                var request = new sql.Request(connection);
+                var queryStatus = `SELECT        Status
+                                     FROM            BookStatus
+                                     WHERE        (BookStatusId = '${statusId}')`;  
+                return new Promise(function (resolve, reject) {
+                    return request.query(queryStatus, function (err, response) {
+                        if (err) {
+                            console.log(queryStatus, err);
+                            reject(err);
+                        }
+                        else {                
+                            console.log(response.recordset[0].Status);         
+                            resolve(response.recordset[0].Status);
+                        }
+                    });
+                });
+            })
+            .then((data) => {
+                resolve(data);
+            })
+            .catch((err) => {
+                reject(err);
+            })
+    });
+}
+
+function getFavouriteBooksList(userFave) {
+    var connection = new sql.ConnectionPool(config.dbConfig);
+    return new Promise((resolve, reject) => {
+        connection.connect()
+            .then(() =>{
+                var request = new sql.Request(connection);
+                var queryfaveStat = `SELECT       Book.*
+                                     FROM            FavouriteBook INNER JOIN
+                                                     Book ON FavouriteBook.BookId = Book.BookId
+                                     WHERE        (FavouriteBook.UserId = '${userFave.userId}') AND 
+                                                  (FavouriteBook.BookStatusId = '${userFave.statusId}')`;    
+                return new Promise(function (resolve, reject) {
+                    return request.query(queryfaveStat, function (err, response) {
+                        if (err) {
+                            console.log(err);
+                            reject(err);
+                        }
+                        else {
+                            resolve(response.recordset);
+                        }
+                    });
+                });
+            })
+            .then((data) => {
+                resolve(data);
+            })
+            .catch((err) => {
+                reject(err);
+            })
     });
 }
 
