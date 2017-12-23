@@ -1,0 +1,10 @@
+{
+  "name": "bookworm",
+  "version": "1.0.0",
+  "scripts": {
+    "start-client": "npm start --prefix ./client",
+    "start-server": "npm start --prefix ./server/",
+    "start": "start npm run start-server && start npm run start-client",
+    "test": "npm test --prefix ./server/"
+  }
+}
