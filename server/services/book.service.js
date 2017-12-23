@@ -3,9 +3,10 @@ var Q = require('q');
 var service = {};
 var config = require('config.json');
 var sql = require('mssql');
+var db = require('../helpers/dbHelper.js');
 
 service.find = find;
-service.AddInFavourite = AddInFavourite;
+service.addInFavourite = addInFavourite;
 service.getCatalog = getCatalog;
 service.getBookWithNewKeyWords = getBookWithNewKeyWords;
 service.getBookStatus = getBookStatus;
@@ -24,313 +25,207 @@ function find(key) {
 function getBookStatus(book)
 {
     PrepareBook(book);
-    var connection = new sql.ConnectionPool(config.dbConfig);
-     return new Promise((resolve, reject) => {
-        connection.connect()
-            .then(() => {
-                return getStatus(connection, book.title, book.authors, book.userId);
-            })
-            .then((data) => {
-                connection.close();
-                resolve(data);
-            })
-            .catch((err) => {
-                connection.close();
-                reject(err);
-            })
-        });
-}
-
-function getStatus(connection, title, authors, userId)
-{
-    var request = new sql.Request(connection);
-    var queryGetStatus = `SELECT status from ((BookStatus BS inner join FavouriteBook FB on BS.BookStatusId = FB.BookStatusId) 
-            inner join Book B ON 
-            B.BookId = FB.BookId) where B.title = '${title}' AND B.authors = '${authors}' AND FB.UserId = '${userId}'`;
-    console.log(queryGetStatus);
-
-    return new Promise(function (resolve, reject) {
-        return request.query(queryGetStatus, function (err, response) {
-            if (err) {
-                console.log(err);
-                reject(err);
-            }
-            else {
-                if (response.recordset.rowsAffected == 0 || response.recordset[0] == undefined)
-                    return resolve([]);
-                else
-                {
-                    console.log(response);
-                    resolve(response.recordset);
-                }
-            }
-        });
-    });
+    return db.getStatus(book.title, book.authors, book.userId);
 }
 
 function getBookWithNewKeyWords()
 {
-    var connection = new sql.ConnectionPool(config.dbConfig);
-   
-    return new Promise((resolve, reject) => {
-        connection.connect()
-            .then(() => {
-                return getBooks(connection);
-            })
-            .then((data) => {
-                connection.close();
-                resolve(data);
-            })
-            .catch((err) => {
-                connection.close();
-                reject(err);
-            })
-        });
+    return getBooks()
+        .catch((err) => {
+            console.log(err);
+        })
 }
 
-function getBooks(connection)
+function getBooks()
 {
     console.log('getBooks');
-    var request = new sql.Request(connection);
     var queryGetBook = `SELECT * from ((Book inner join BookKeyWord on BookKeyWord.BookId = Book.BookId) 
             inner join KeyWord ON 
             KeyWord.KeyWordId = BookKeyWord.KeyWordId)`;
-    
-    return new Promise(function (resolve, reject) {
-        return request.query(queryGetBook, function (err, response) {
-            if (err) {
-                console.log(err);
-                reject(err);
-            }
-            else {
-                    console.log(response.recordset);
-                    resolve(response.recordset);
-            }
+    return db.executeQuery(queryGetBook)
+        .then((res) => {
+            return Promise.resolve(res.recordset);
         });
-    });
 }
 
-function getCatalog()
-{
-    var connection = new sql.ConnectionPool(config.dbConfig);
-    
-    return new Promise((resolve, reject) => {
-        connection.connect()
-            .then(() =>{
-                var request = new sql.Request(connection);
-                var queryGetAllBooks = `select * from Book`;
+function getCatalog() {
+    var queryGetAllBooks = `select * from Book`;
                     
-                return new Promise(function (resolve, reject) {
-                    return request.query(queryGetAllBooks, function (err, response) {
-                        if (err) {
-                            console.log(err);
-                            reject(err);
-                        }
-                        else {
-                            resolve(response.recordset);
-                        }
-                    });
-                });
-            })
-            .then((data) => {
-                resolve(data);
-            })
-            .catch((err) => {
-                reject(err);
-            })
-    });
+    return db.executeQuery(queryGetAllBooks)
+        .then((res) => {
+            return Promise.resolve(res.recordset);
+        });
 }
 
-function AddInFavourite(favouriteBook) {
-    var connection = new sql.ConnectionPool(config.dbConfig);
+function addInFavourite(favouriteBook) {
     PrepareBook(favouriteBook.book);
-   let favouriteBookInfo = {};
+    let favouriteBookInfo = {};
    
-    return new Promise((resolve, reject) => {
-        connection.connect()
-            .then(() => {
-                return CheckBook(connection, favouriteBook.book);
-            })
-            .then((book_id) => {
-                if (!book_id)
-                    return AddBook(connection, favouriteBook.book);
-                else
-                    return Promise.resolve(book_id);
-            })
-            .then((book_id) => {
-                favouriteBookInfo.book_id = book_id;
-                return CheckFavouriteBook(connection, book_id, favouriteBook.user.UserId);
-                
-            })
-            .then((IsFavExists) => {
-                favouriteBookInfo.IsFavExists = IsFavExists;
-                console.log(favouriteBookInfo);
-                return GetStatusIdByName(connection, favouriteBook.book.status);
-            })
-            .then((statusId) => {
-                favouriteBookInfo.statusId = statusId;
-                if (!favouriteBookInfo.IsFavExists)
-                    return AddBookFavourite(connection, favouriteBookInfo.book_id, favouriteBook, favouriteBookInfo.statusId);
-                else
-                    return UpdateFavouriteBook(connection, favouriteBookInfo.book_id, favouriteBook, favouriteBookInfo.statusId);
-            })
-            .then(() => {
-                connection.close();
-                resolve();
-            })
-            .catch((err) => {
-                connection.close();
-                reject(err);
-            })
-    });
+    return checkBook(favouriteBook.book)
+        .then((book_id) => {
+            if (!book_id)
+                return AddBook(favouriteBook.book);
+            else
+                return Promise.resolve(book_id);
+        })
+        .then((book_id) => {
+            favouriteBookInfo.book_id = book_id;
+            return checkFavouriteBook(book_id, favouriteBook.user.UserId);
+        })
+        .then((IsFavExists) => {
+            favouriteBookInfo.IsFavExists = IsFavExists;
+            console.log(favouriteBookInfo);
+            return GetStatusIdByName(favouriteBook.book.status);
+        })
+        .then((statusId) => {
+            favouriteBookInfo.statusId = statusId;
+            if (!favouriteBookInfo.IsFavExists)
+                return AddBookFavourite(favouriteBookInfo.book_id, favouriteBook, favouriteBookInfo.statusId);
+            else
+                return UpdateFavouriteBook(favouriteBookInfo.book_id, favouriteBook, favouriteBookInfo.statusId);
+        })
+        .catch((err) => {
+            console.log(err);
+        })
 }
 
-function CheckBook(connection, book)
-{
-    console.log('CheckBook');
-    var request = new sql.Request(connection);
+function checkBook(book) {
+    console.log('checkBook');
     var queryExistBook = `select BookId from Book where title = '${book.title}'  and authors = '${book.authors}'`;
     
-    return new Promise(function (resolve, reject) {
-        return request.query(queryExistBook, function (err, response) {
-            if (err) {
-                console.log(err);
-                reject(err);
-            }
-            else {
-                if (response.recordset.rowsAffected == 0 || response.recordset[0] == undefined)
-                {
-                    console.log(null);
-                    resolve(null);
-                }
-                else
-                {
-                    console.log(response.recordset[0].BookId);
-                    resolve(response.recordset[0].BookId);
-                }
+    return db.executeQuery(queryExistBook)
+        .then((res) => {
+            if (res.recordset.rowsAffected === 0 || !res.recordset[0]) {
+                return Promise.resolve(null);
+            } else {
+                return Promise.resolve(res.recordset[0].BookId);
             }
         });
-    });
 }
 
-function CheckFavouriteBook(connection, book_id, userId)
-{
+function checkFavouriteBook(book_id, userId) {
     console.log('CheckFavouriteBook');
-    var request = new sql.Request(connection);
     var queryExistFavBook = `select BookId from FavouriteBook where BookId = '${book_id}'  and UserId = '${userId}'`;
     
-    console.log(queryExistFavBook);
-
-    return new Promise(function (resolve, reject) {
-        return request.query(queryExistFavBook, function (err, response) {
-            if (err) {
-                console.log(err);
-                reject(err);
-            }
-            else {
-                if (response.recordset.rowsAffected == 0 || response.recordset[0] == undefined || response.recordset[0] == null)
-                    resolve(false);
-                else
-                    resolve(true);
-            }
+    return db.executeQuery(queryExistFavBook)
+        .then((res) => {
+            let ok = !(res.recordset.rowsAffected === 0 || !res.recordset[0]);
+            return Promise.resolve(ok);
         });
-    });
 }
 
-function AddBook(connection, book)
-{
-    console.log('ADDBook', book);
-    if (book.publishedDate == undefined)
-        book.publishedDate = null;
+function AddBook(book) {
+    console.log('ADDBook');
     var queryInsertBook = `insert into Book(title, authors, link, thumbnail, publishedDate, description, EstimatedRating) OUTPUT Inserted.BookId values
             ('${book.title}', '${book.authors}', '${book.link}', '${book.thumbnail}', ${book.publishedDate},
              '${book.description}', 1)`;
 
-    console.log(queryInsertBook);
-    var request = new sql.Request(connection);
-
-    return new Promise(function (resolve, reject) {
-        return request.query(queryInsertBook, function (err, response) {
-            if (err) {
-                console.log(queryInsertBook, err);
-                return reject(err);
-            }
-            console.log(response.recordset[0].BookId);
-            return resolve(response.recordset[0].BookId);
+    return db.executeQuery(queryInsertBook)
+        .then((res) => {
+            return Promise.resolve(res.recordset[0].BookId);
         });
-    });
 }
 
-function AddBookFavourite(connection, bookId, favourBook, statusId)
+function AddBookFavourite(bookId, favourBook, statusId)
 {
     console.log('AddFavourite');
     var queryInsertFavouriteBook = `insert into FavouriteBook(UserId, BookId, BookStatusId, UserRating) values
             ('${favourBook.user.UserId}', '${bookId}', '${statusId}', 0)`;
 
-
-    console.log(queryInsertFavouriteBook);
-    var request = new sql.Request(connection);
-
-    return new Promise(function (resolve, reject) {
-        return request.query(queryInsertFavouriteBook, function (err, response) {
-            if (err) {
-                console.log(queryInsertFavouriteBook, err);
-                return reject(err);
-            }
-            console.log('addedFav');
-            return resolve();
-        });
-    });
+    return db.executeQuery(queryInsertFavouriteBook);
 }
 
-function UpdateFavouriteBook(connection, bookId, favourBook, statusId)
+function UpdateFavouriteBook(bookId, favourBook, statusId)
 {
-    console.log('UpdateFavourite', bookId, favourBook);
+    console.log('UpdateFavourite');
     var queryUpdateFavouriteBook = `UPDATE FavouriteBook SET BookStatusId = '${statusId}' where
-    UserId = '${favourBook.user.UserId}' AND BookId = '${bookId}'`;
+        UserId = '${favourBook.user.UserId}' AND BookId = '${bookId}'`;
 
-
-    console.log(queryUpdateFavouriteBook);
-    var request = new sql.Request(connection);
-
-    return new Promise(function (resolve, reject) {
-        return request.query(queryUpdateFavouriteBook, function (err, response) {
-            if (err) {
-                console.log(queryUpdateFavouriteBook, err);
-                return reject(err);
-            }
-            console.log('UpdateFav');
-            return resolve();
-        });
-    });
+    return db.executeQuery(queryUpdateFavouriteBook);
 }
 
-function GetStatusIdByName(connection, statusName)
+function GetStatusIdByName(statusName)
 {
     console.log('GetStatusIdByName');
     var queryGetStatus = `SELECT BookStatusId from BookStatus where Status = '${statusName}'`;
 
-    console.log(queryGetStatus);
-    var request = new sql.Request(connection);
-
-    return new Promise(function (resolve, reject) {
-        return request.query(queryGetStatus, function (err, response) {
-            if (err) {
-                console.log(queryGetStatus, err);
-                return reject(err);
-            }
-            console.log(response.recordset[0].BookStatusId);
-            return resolve(response.recordset[0].BookStatusId);
+    return db.executeQuery(queryGetStatus)
+        .then((res) => {
+            return Promise.resolve(res.recordset[0].BookStatusId);
         });
-    });
+}
+
+function updateTags(tags)
+{
+    console.log('updateTags');
+    return removeTags(tags.removed)
+        .then(() => {
+            return addTags(tags.added);
+        })
+}
+
+function removeTags(tags)
+{
+    console.log('removeTags', tags);
+    let promises = [];
+
+    for (let bookId in tags) {
+        tags[bookId].forEach(function(wordId) {
+            promises.push(db.removeKeyWord(bookId, wordId));
+        });
+    }
+    console.log(promises);
+    return Promise.all(promises);
+}
+
+function addTags(tags)
+{
+    console.log('addTags');
+    let promises = [];
+    for (let bookId in tags) {
+        tags[bookId].forEach(function(wordId) {
+            let promis = getWordId(wordId)
+                .then((word_id) => {
+                    var queryAddTag = `INSERT INTO BookKeyWord(BookId, KeyWordId, IsChecked) values('${bookId}', '${word_id}', 'true')`;
+                    return db.executeQuery(queryAddTag);
+                })
+            promises.push(promis);
+        });
+    }
+    return Promise.all(promises);
+}
+
+function getWordId(word) {
+    console.log('getWordId');
+    return checkWord(word)
+        .then((word_id) => {
+            if (!word_id)
+                return addWord(word);
+            else
+                return Promise.resolve(word_id);
+        })
+}
+
+function checkWord(keyWord)
+{
+    console.log('checkWord');
+    return db.findKeyWord(keyWord);
+}
+
+function addWord(keyWord)
+{
+    console.log('addWord');
+    return db.addKeyWord(keyWord);
 }
 
 function PrepareBook(book)
 {
-    book.title = mysql_real_escape_string(book.title);
-    book.authors = mysql_real_escape_string(book.authors);
-    if (book.description)
-        book.description = mysql_real_escape_string(book.description);
+    for (key in book) {
+        book[key] = book[key] || null;
+        if (book[key]) {
+            mysql_real_escape_string(book[key]);
+        }
+    }
 }
 
 function mysql_real_escape_string (str) {
@@ -358,143 +253,5 @@ function mysql_real_escape_string (str) {
                 return char + char; // prepends a backslash to backslash, percent,
                                     // and double/single quotes
         }
-    });
-}
-
-function updateTags(tags)
-{
-    console.log('updateTags');
-    var connection = new sql.ConnectionPool(config.dbConfig);
-    var request = new sql.Request(connection);
-    return new Promise((resolve, reject) => {
-        connection.connect()
-        .then(() => {
-            return removeTags(connection, tags.removed);
-        })
-        .then(() => {
-            return addTags(connection, tags.added);
-        })
-        .then(() =>{
-            resolve();    
-        })
-        .catch((err) => {
-            reject(err);
-        })
-    });
-}
-
-function removeTags(connection, tags)
-{
-    console.log('removeTags', tags);
-    let promises = [];
-
-    for (let bookId in tags)
-    {
-        tags[bookId].forEach(function(wordId)
-        {
-            var queryRemoveTag = `DELETE BookKeyWord where BookId = '${bookId}' AND KeyWordId = '${wordId}'`;
-
-            console.log(queryRemoveTag);
-            var request = new sql.Request(connection);
-
-            promises.push(new Promise(function (resolve, reject) {
-                request.query(queryRemoveTag, function (err, response) {
-                    if (err) {
-                        console.log(queryRemoveTag, err);
-                        reject(err);
-                    }
-                    resolve();
-                });
-            }));
-        });
-    }
-    console.log(promises);
-    return Promise.all(promises);
-}
-
-function addTags(connection, tags)
-{
-    console.log('addTags');
-    let promises = [];
-    for (let bookId in tags)
-    {
-        tags[bookId].forEach(function(wordId)
-        {
-            let tmp = getWordId(connection, wordId)
-                .then((word_id) => {
-                    var queryAddTag = `INSERT INTO BookKeyWord(BookId, KeyWordId, IsChecked) values('${bookId}', '${word_id}', 'true')`;
-
-                    console.log(queryAddTag);
-                    var request = new sql.Request(connection);
-
-                    return new Promise(function (resolve, reject) {
-                        request.query(queryAddTag, function (err, response) {
-                            if (err) {
-                                console.log(queryAddTag, err);
-                                reject(err);
-                            }
-                            resolve();
-                        });
-                    });
-                })
-            promises.push(tmp);
-        });
-    }
-    return Promise.all(promises);
-}
-
-function getWordId(connection, word) {
-    console.log('getWordId');
-    return checkWord(connection, word)
-        .then((word_id) => {
-            if (!word_id)
-                return addWord(connection, word);
-            else
-                return Promise.resolve(word_id);
-        })
-}
-
-function checkWord(connection, word)
-{
-    console.log('checkWord');
-    var queryCheckWord = `SELECT KeyWordId FROM KeyWord where word = '${word}'`;
-
-    console.log(queryCheckWord);
-    var request = new sql.Request(connection);
-
-    return new Promise(function (resolve, reject) {
-        return request.query(queryCheckWord, function (err, response) {
-            if (err) {
-                console.log(queryCheckWord, err);
-                reject(err);
-            }
-            if (response.recordset.rowsAffected == 0 || response.recordset[0] == undefined)
-                resolve(null);
-            else
-            {
-                console.log(response.recordset[0].KeyWordId);
-                resolve(response.recordset[0].KeyWordId);
-            }
-        });
-    });
-}
-
-function addWord(connection, word)
-{
-    console.log('addWord');
-    var queryAddWord = `INSERT INTO KeyWord(word) OUTPUT Inserted.KeyWordId values ('${word}') `;
-
-    console.log(queryAddWord);
-    var request = new sql.Request(connection);
-
-    return new Promise(function (resolve, reject) {
-        return request.query(queryAddWord, function (err, response) {
-            if (err) {
-                console.log(queryAddWord, err);
-                reject(err);
-            }
-            console.log(response.recordset[0].KeyWordId);
-            resolve(response.recordset[0].KeyWordId);
-        });
     });
 }

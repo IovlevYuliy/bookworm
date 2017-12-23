@@ -31,8 +31,7 @@ function getBookStatus(req, res)
 {
     var params = url.parse(req.url, true);
     var query = params.query;
-    console.log('qqqqqqqqq', query);
-     bookService.getBookStatus(query)
+    bookService.getBookStatus(query)
         .then(function (data) {
             res.send(data);
         })
@@ -43,8 +42,8 @@ function getBookStatus(req, res)
 
 function getBookWithNewKeyWords(req, res)
 {
-     console.log('getBookWithNewKeyWords');
-     bookService.getBookWithNewKeyWords()
+    console.log('getBookWithNewKeyWords');
+    bookService.getBookWithNewKeyWords()
         .then(function (data) {
             res.send(data);
         })
@@ -57,7 +56,7 @@ function getBookWithNewKeyWords(req, res)
 function getCatalog(req, res)
 {
     console.log('getCatalog');
-     bookService.getCatalog()
+    bookService.getCatalog()
         .then(function (data) {
             res.send(data);
         })
@@ -68,7 +67,7 @@ function getCatalog(req, res)
 
 function AddFavourite(req, res)
 {
-    bookService.AddInFavourite(req.body)
+    bookService.addInFavourite(req.body)
         .then(function () {
             res.sendStatus(200);
         })
@@ -79,7 +78,7 @@ function AddFavourite(req, res)
 
 function updateTags(req, res)
 {
-     bookService.updateTags(req.body)
+    bookService.updateTags(req.body)
         .then(function () {
             res.sendStatus(200);
         })
