@@ -2,9 +2,10 @@
   "name": "bookworm-server",
   "version": "1.0.0",
   "description": "Server for BookWorm service",
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/IovlevYuliy/bookworm/tree/server-tests"
   },
   "scripts": {
     "start": "SET NODE_ENV=dev&&node server.js",
