@@ -1,16 +1,18 @@
-var config = require('config.json');
 var express = require('express');
 var router = express.Router();
 var bookService = require('services/book.service');
 var url = require('url');
+var logger = require('../log');
 
 // routes
 router.get('/', findBook);
 router.post('/favour', AddFavourite);
 router.post('/moderator', updateTags)
 router.get('/catalog', getCatalog);
-router.get('/bookDetails', getBookStatus);
+router.get('/bookstatus', GetBookStatus);
+router.get('/bookDetails', getBookInfo);
 router.get('/moderator', getBookWithNewKeyWords)
+
 
 module.exports = router;
 
@@ -27,11 +29,10 @@ function findBook(req, res)
         });
 }
 
-function getBookStatus(req, res)
-{
+function getBookInfo(req, res) {
     var params = url.parse(req.url, true);
     var query = params.query;
-    bookService.getBookStatus(query)
+    bookService.getBookInfo(query)
         .then(function (data) {
             res.send(data);
         })
@@ -40,9 +41,8 @@ function getBookStatus(req, res)
         });
 }
 
-function getBookWithNewKeyWords(req, res)
-{
-    console.log('getBookWithNewKeyWords');
+function getBookWithNewKeyWords(req, res) {
+    logger.debug('getBookWithNewKeyWords');
     bookService.getBookWithNewKeyWords()
         .then(function (data) {
             res.send(data);
@@ -53,9 +53,8 @@ function getBookWithNewKeyWords(req, res)
 }
 
 
-function getCatalog(req, res)
-{
-    console.log('getCatalog');
+function getCatalog(req, res) {
+    logger.debug('getCatalog');
     bookService.getCatalog()
         .then(function (data) {
             res.send(data);
@@ -65,19 +64,17 @@ function getCatalog(req, res)
         });
 }
 
-function AddFavourite(req, res)
-{
+function AddFavourite(req, res) {
     bookService.addInFavourite(req.body)
-        .then(function () {
-            res.sendStatus(200);
+        .then(function (data) {
+            res.send(data);
         })
         .catch(function (err) {
             res.status(400).send(err);
         });
 }
 
-function updateTags(req, res)
-{
+function updateTags(req, res) {
     bookService.updateTags(req.body)
         .then(function () {
             res.sendStatus(200);
@@ -87,3 +84,30 @@ function updateTags(req, res)
         });
 }
 
+function GetBookStatus(req, res)
+{
+    var params = url.parse(req.url, true);
+    var query = params.query;
+    bookService.GetBookStatus(query.title)
+        .then(function (data) {
+            res.send(200, data);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function getBookRates(req, res)
+{
+  //  var params = url.parse(req.url, true);
+  //  var query = params.query;
+    logger.debug('getBookRates');
+    res.send('1');
+    // bookService.getBookRates()
+    //     .then(function (data) {
+    //         res.send(data);
+    //     })
+    //     .catch(function (err) {
+    //         res.status(400).send(err);
+    //     });
+}

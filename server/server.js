@@ -4,12 +4,18 @@ var app = express();
 var cors = require('cors');
 var bodyParser = require('body-parser');
 var expressJwt = require('express-jwt');
-var config = require('config.json');
+var config = require('config');
+var morgan = require('morgan');
 
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+if(config.util.getEnv('NODE_ENV') !== 'test') {
+    // show logs
+    app.use(morgan('combined'));
+}
 
 //use JWT auth to secure the api, the token can be passed in the authorization header or querystring
 app.use(expressJwt({
@@ -22,7 +28,7 @@ app.use(expressJwt({
         }
         return null;
     }
-}).unless({ path: ['/users/authenticate', '/users/register', '/books/favour', '/catalog'] }));
+}).unless({ path: ['/users/authenticate', '/users/register', '/users/token'] }));
 
 // routes
 app.use('/users', require('./controllers/users.controller'));
@@ -32,4 +38,7 @@ app.use('/books', require('./controllers/book.controller'));
 var port = process.env.NODE_ENV === 'production' ? 80 : 4000;
 var server = app.listen(port, function () {
     console.log('Server listening on port ' + port);
+    // console.log('Using config: ', config);
 });
+
+module.exports = app;

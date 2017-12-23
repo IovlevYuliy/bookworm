@@ -1,4 +1,4 @@
-var config = require('config.json');
+var config = require('config');
 var sql = require('mssql');
 
 function executeQuery(query) {

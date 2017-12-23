@@ -34,7 +34,7 @@ export class BookComponent implements OnInit {
         this.bookService.AddInFavourite(book, currentUser)
             .subscribe(
                 data => {
-                    this.alertService.success('Книга успешно добавлена в избранное', true);
+                    this.alertService.success(data.text(), false);
                 },
                 error => {
                     this.alertService.error(error);
