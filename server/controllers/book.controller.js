@@ -7,6 +7,7 @@ var url = require('url');
 // routes
 router.get('/', findBook);
 router.post('/favour', AddFavourite);
+router.post('/moderator', updateTags)
 router.get('/catalog', getCatalog);
 router.get('/bookDetails', getBookStatus);
 router.get('/moderator', getBookWithNewKeyWords)
@@ -68,6 +69,17 @@ function getCatalog(req, res)
 function AddFavourite(req, res)
 {
     bookService.AddInFavourite(req.body)
+        .then(function () {
+            res.sendStatus(200);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function updateTags(req, res)
+{
+     bookService.updateTags(req.body)
         .then(function () {
             res.sendStatus(200);
         })

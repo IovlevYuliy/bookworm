@@ -9,6 +9,7 @@ service.AddInFavourite = AddInFavourite;
 service.getCatalog = getCatalog;
 service.getBookWithNewKeyWords = getBookWithNewKeyWords;
 service.getBookStatus = getBookStatus;
+service.updateTags = updateTags;
 
 module.exports = service;
 
@@ -360,4 +361,140 @@ function mysql_real_escape_string (str) {
     });
 }
 
+function updateTags(tags)
+{
+    console.log('updateTags');
+    var connection = new sql.ConnectionPool(config.dbConfig);
+    var request = new sql.Request(connection);
+    return new Promise((resolve, reject) => {
+        connection.connect()
+        .then(() => {
+            return removeTags(connection, tags.removed);
+        })
+        .then(() => {
+            return addTags(connection, tags.added);
+        })
+        .then(() =>{
+            resolve();    
+        })
+        .catch((err) => {
+            reject(err);
+        })
+    });
+}
 
+function removeTags(connection, tags)
+{
+    console.log('removeTags', tags);
+    let promises = [];
+
+    for (let bookId in tags)
+    {
+        tags[bookId].forEach(function(wordId)
+        {
+            var queryRemoveTag = `DELETE BookKeyWord where BookId = '${bookId}' AND KeyWordId = '${wordId}'`;
+
+            console.log(queryRemoveTag);
+            var request = new sql.Request(connection);
+
+            promises.push(new Promise(function (resolve, reject) {
+                request.query(queryRemoveTag, function (err, response) {
+                    if (err) {
+                        console.log(queryRemoveTag, err);
+                        reject(err);
+                    }
+                    resolve();
+                });
+            }));
+        });
+    }
+    console.log(promises);
+    return Promise.all(promises);
+}
+
+function addTags(connection, tags)
+{
+    console.log('addTags');
+    let promises = [];
+    for (let bookId in tags)
+    {
+        tags[bookId].forEach(function(wordId)
+        {
+            let tmp = getWordId(connection, wordId)
+                .then((word_id) => {
+                    var queryAddTag = `INSERT INTO BookKeyWord(BookId, KeyWordId, IsChecked) values('${bookId}', '${word_id}', 'true')`;
+
+                    console.log(queryAddTag);
+                    var request = new sql.Request(connection);
+
+                    return new Promise(function (resolve, reject) {
+                        request.query(queryAddTag, function (err, response) {
+                            if (err) {
+                                console.log(queryAddTag, err);
+                                reject(err);
+                            }
+                            resolve();
+                        });
+                    });
+                })
+            promises.push(tmp);
+        });
+    }
+    return Promise.all(promises);
+}
+
+function getWordId(connection, word) {
+    console.log('getWordId');
+    return checkWord(connection, word)
+        .then((word_id) => {
+            if (!word_id)
+                return addWord(connection, word);
+            else
+                return Promise.resolve(word_id);
+        })
+}
+
+function checkWord(connection, word)
+{
+    console.log('checkWord');
+    var queryCheckWord = `SELECT KeyWordId FROM KeyWord where word = '${word}'`;
+
+    console.log(queryCheckWord);
+    var request = new sql.Request(connection);
+
+    return new Promise(function (resolve, reject) {
+        return request.query(queryCheckWord, function (err, response) {
+            if (err) {
+                console.log(queryCheckWord, err);
+                reject(err);
+            }
+            if (response.recordset.rowsAffected == 0 || response.recordset[0] == undefined)
+                resolve(null);
+            else
+            {
+                console.log(response.recordset[0].KeyWordId);
+                resolve(response.recordset[0].KeyWordId);
+            }
+        });
+    });
+}
+
+function addWord(connection, word)
+{
+    console.log('addWord');
+    var queryAddWord = `INSERT INTO KeyWord(word) OUTPUT Inserted.KeyWordId values ('${word}') `;
+
+    console.log(queryAddWord);
+    var request = new sql.Request(connection);
+
+    return new Promise(function (resolve, reject) {
+        return request.query(queryAddWord, function (err, response) {
+            if (err) {
+                console.log(queryAddWord, err);
+                reject(err);
+            }
+            console.log(response.recordset[0].KeyWordId);
+            resolve(response.recordset[0].KeyWordId);
+        });
+    });
+}
