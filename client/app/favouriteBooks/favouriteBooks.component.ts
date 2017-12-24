@@ -50,5 +50,5 @@ export class FavouriteBooksComponent implements OnInit, OnDestroy,  AfterViewIni
 
     ngOnDestroy() {
         this.sub.unsubscribe();
-      }
+    }
 }
