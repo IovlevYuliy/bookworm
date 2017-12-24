@@ -28,7 +28,7 @@ export class FavouriteBooksComponent implements OnInit, OnDestroy,  AfterViewIni
         this.statusId = params['statusId'];
         this.bookService.getStatusNameById(this.statusId)
                .subscribe(data => { 
-                   this.statusName = String(data.text); 
+                   this.statusName = String(data._body); 
                 },
                 error => {
                    this.alertService.error(error);
@@ -36,9 +36,9 @@ export class FavouriteBooksComponent implements OnInit, OnDestroy,  AfterViewIni
 
         let currentUser = JSON.parse(localStorage.getItem('currentUser'));           
         this.bookService.getFavouriteBooksList(currentUser.UserId, this.statusId)
-                .subscribe(books => { 
-                    this.books = books; console.log(this.books); 
-                });
+            .subscribe(books => { 
+                this.books = books; console.log(this.books); 
+            });
         });
     }
       

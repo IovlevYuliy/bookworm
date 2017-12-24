@@ -186,7 +186,7 @@ function AddBook(book) {
     var queryInsertBook = `insert into Book(title, authors, link, thumbnail, publishedDate, description, EstimatedRating) OUTPUT Inserted.BookId values
             ('${book.title}', '${book.authors}', '${book.link}', '${book.thumbnail}', ${book.publishedDate},
              '${book.description}', '${book.estimatedRating}')`;
-
+    logger.info(queryInsertBook);
     return db.executeQuery(queryInsertBook)
         .then((res) => {
             return Promise.resolve(res.recordset[0].BookId);
@@ -306,12 +306,13 @@ function getFavouriteBooksList(userFave) {
 function prepareBook(book) {
     logger.info('prepareBook');
     for (key in book) {
-        if (book[key]) {
-            mysql_real_escape_string(book[key]);
-        } else if (book[key] === undefined) {
+        if (book[key] === undefined)
             book[key] = null;
-        }
     }
+    book.title = mysql_real_escape_string(book.title);
+    book.authors = mysql_real_escape_string(book.authors);
+    if (book.description)
+        book.description = mysql_real_escape_string(book.description);
 }
 
 function mysql_real_escape_string (str) {

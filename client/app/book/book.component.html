@@ -5,11 +5,9 @@
 				<img *ngIf="book.thumbnail" class="book-image" src={{book.thumbnail}} (click)="this._SendDataService.setData(book);SharedData=book.Title;">
 				<img *ngIf="!book.thumbnail" class="book-image" src="../../asserts/empty-book.png" (click)="this._SendDataService.setData(book);SharedData=book.Title;">
 			</a>
-		
 		</div>
 		<span class= "book-title" title="{{book.title}}">
 			{{book.title}}
 		</span>
-		<button (click)="AddBook(book)">favourite</button>
 	</div>
 </div>
