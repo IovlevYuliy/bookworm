@@ -1,29 +1,28 @@
-﻿var configJson = require('config.json');
+﻿var config = require('config');
 var _ = require('lodash');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
 var Q = require('q');
-var mongo = require('mongoskin');
-var db = mongo.db(configJson.connectionString, { native_parser: true });
 const sql = require('mssql');
-var config = require('config.json');
-db.bind('users');
+var logger = require('../log');
 
 var service = {};
 
 service.authenticate = authenticate;
-service.getAll = getAll;
-service.getById = getById;
+service.getToken = getToken;
+// service.getAll = getAll;
+// service.getById = getById;
 service.createUser = createUser;
-service.update = update;
-service.delete = _delete;
+// service.update = update;
+// service.delete = _delete;
 service.CurrentUser = null;
 
 module.exports = service;
 
 function authenticate(login, password) {
-     var connection = new sql.ConnectionPool(config.dbConfig);
-     return new Promise((resolve, reject) => {
+    logger.info('authenticate');
+    var connection = new sql.ConnectionPool(config.dbConfig);
+    return new Promise((resolve, reject) => {
         connection.connect()
             .then(() => {
                 return authenticateUser(connection, login, password);
@@ -39,10 +38,9 @@ function authenticate(login, password) {
         });
 }
 
-function authenticateUser(connection, login, password)
-{
-    console.log('authUser');
-     var request = new sql.Request(connection);
+function authenticateUser(connection, login, password) {
+    logger.info('authenticateUser');
+    var request = new sql.Request(connection);
     var queryIsUserExist = `SELECT * FROM [User] where [login] = '${login}'`;
 
     return new Promise(function (resolve, reject) {
@@ -72,44 +70,17 @@ function authenticateUser(connection, login, password)
     });
 }
 
-function getAll() {
+
+function getToken(login, password) {
+    logger.info('getToken');
     var deferred = Q.defer();
-
-    db.users.find().toArray(function (err, users) {
-        if (err) deferred.reject(err.name + ': ' + err.message);
-
-        // return users (without hashed passwords)
-        users = _.map(users, function (user) {
-            return _.omit(user, 'hash');
-        });
-
-        deferred.resolve(users);
-    });
-
+    deferred.resolve(jwt.sign({ sub: login }, config.secret));
     return deferred.promise;
-}
-
-function getById(_id) {
-    var deferred = Q.defer();
-
-    db.users.findById(_id, function (err, user) {
-        if (err) deferred.reject(err.name + ': ' + err.message);
-
-        if (user) {
-            // return user (without hashed password)
-            deferred.resolve(_.omit(user, 'hash'));
-        } else {
-            // user not found
-            deferred.resolve();
-        }
-    });
-
-    return deferred.promise;
-}
+};
 
 function createUser(userParam) {
+    logger.info('createUser');
     var user = _.omit(userParam, 'password');
-    // add hashed password to user object
     user.hash = bcrypt.hashSync(userParam.password, 10);
 
     var connection = new sql.ConnectionPool(config.dbConfig);
@@ -138,15 +109,15 @@ function createUser(userParam) {
         });
  }
   
-function addUser(connection, userParam)
-{  
+function addUser(connection, userParam) {  
+    logger.info('addUser');
     var queryInsertUser = `insert into [User](UserRoleId, Login, Password, Email) values
             (1, '${user.Login}', '${user.hash}', '${user.email}')`;
 
     return new Promise(function (resolve, reject) {
         return request.query(queryInsertUser, function (err, response) {
             if (err) {
-                console.log(err);
+                logger.error('err');
                 reject(err);
             }
             else 
@@ -155,96 +126,24 @@ function addUser(connection, userParam)
         });
 }
 
-function checkUserExists(connection, user)
-{
-    console.log('CheckUser');
+function checkUserExists(connection, user) {
+    logger.info('CheckUser');
     var request = new sql.Request(connection);
     var queryExistUser = `select UserId from [User] where Login = '${user.Login}'`;
     
     return new Promise(function (resolve, reject) {
         return request.query(queryExistUser, function (err, response) {
             if (err) {
-                console.log(err);
+                logger.error('err');
                 reject(err);
             }
             else {
-                if (response.recordset.rowsAffected == 0 || response.recordset[0] == undefined)
-                {
-                    console.log(false);
+                if (response.recordset.rowsAffected === 0 || !response.recordset[0]) {
                     resolve(false);
-                }
-                else
-                {
-                    console.log(true);
+                } else {
                     resolve(true);
                 }
             }
         });
     });
-}
-
-function update(_id, userParam) {
-    var deferred = Q.defer();
-
-    // validation
-    db.users.findById(_id, function (err, user) {
-        if (err) deferred.reject(err.name + ': ' + err.message);
-
-        if (user.username !== userParam.username) {
-            // username has changed so check if the new username is already taken
-            db.users.findOne(
-                { username: userParam.username },
-                function (err, user) {
-                    if (err) deferred.reject(err.name + ': ' + err.message);
-
-                    if (user) {
-                        // username already exists
-                        deferred.reject('Username "' + req.body.username + '" is already taken')
-                    } else {
-                        updateUser();
-                    }
-                });
-        } else {
-            updateUser();
-        }
-    });
-
-    function updateUser() {
-        // fields to update
-        var set = {
-            firstName: userParam.firstName,
-            lastName: userParam.lastName,
-            username: userParam.username,
-        };
-
-        // update password if it was entered
-        if (userParam.password) {
-            set.hash = bcrypt.hashSync(userParam.password, 10);
-        }
-
-        db.users.update(
-            { _id: mongo.helper.toObjectID(_id) },
-            { $set: set },
-            function (err, doc) {
-                if (err) deferred.reject(err.name + ': ' + err.message);
-
-                deferred.resolve();
-            });
-    }
-
-    return deferred.promise;
-}
-
-function _delete(_id) {
-    var deferred = Q.defer();
-
-    db.users.remove(
-        { _id: mongo.helper.toObjectID(_id) },
-        function (err) {
-            if (err) deferred.reject(err.name + ': ' + err.message);
-
-            deferred.resolve();
-        });
-
-    return deferred.promise;
 }

@@ -42,7 +42,7 @@ div.center{
     cursor: pointer;
     padding-bottom: 3px;
     display: inline-flex;
-    background-image: url(https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png);
+    background-image:  url(./asserts/star-l-empty.png);
     width: 20px;
     height: 20px;
     -webkit-transition: all 0.3s ease;;
@@ -52,11 +52,11 @@ div.center{
 }
 
 .user-rate:hover {
-    background-image: url(https://s.livelib.ru/img/skins/ll2015b/star-l-orange.png);
+    background-image: url(./asserts/star-l-orange.png);
   }
 
 .avg-rate{
-    background-image: url(https://s.livelib.ru/img/skins/ll2015b/star-l-empty.png);
+    background-image: url(./asserts/star-l-empty.png);
     padding-bottom: 3px;
     display: inline-flex;
     width: 20px;
@@ -64,5 +64,6 @@ div.center{
 }
 
 .star-full { 
-    background-image: url(https://s.livelib.ru/img/skins/ll2015b/star-l-orange.png);
+    background-image: url(./asserts/star-l-orange.png);
 }
+

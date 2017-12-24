@@ -19,13 +19,21 @@ import { BookDetailsComponent } from './bookDetails/index';
 import { SendDataService } from './_services/data.service';
 import { CatalogComponent } from './catalog/index';
 import { BooksWNewKeywordsListComponent } from './booksWNewKeywordsList/index';
+import { BookEditComponent } from './bookEdit/index';
+
+import {RlTagInputModule} from 'angular2-tag-input';
+ 
+// Import the library
 
 @NgModule({
     imports: [
         BrowserModule,
         FormsModule,
         HttpModule,
-        routing
+        routing,
+        RlTagInputModule
+
+    // Specify the library as an import
     ],
     declarations: [
         AppComponent,
@@ -37,9 +45,8 @@ import { BooksWNewKeywordsListComponent } from './booksWNewKeywordsList/index';
         BookComponent,
         BookDetailsComponent,
         CatalogComponent,
-        BooksWNewKeywordsListComponent
-        
-        // Autosize
+        BooksWNewKeywordsListComponent,
+        BookEditComponent
     ],
     providers: [
         customHttpProvider,
