@@ -77,6 +77,6 @@ export class BookService {
         params.set('statusId',  statusId);
         let requestOptions = new RequestOptions();
         requestOptions.search = params;        
-        return this.http.get('/books/statusname', requestOptions);    
+        return this.http.get('/books/statusname', requestOptions).map((response: Response) => response.json());
     }
 }

@@ -59,7 +59,7 @@ function getStatusNameById(req, res) {
     var query = params.query; 
     bookService.getStatusNameById(query.statusId)
         .then(function (data) {
-            res.send(data);
+            res.json(data);
         })
         .catch(function (err) {
             res.status(400).send(err);
