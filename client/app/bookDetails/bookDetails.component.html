@@ -63,7 +63,8 @@
             <div class="info-row">
                 <label>Ключевые слова:</label>
                 <div class="col-md-8">
-                        <rl-tag-input [(ngModel)]="keyWords" ng-readonly="all"></rl-tag-input>
+                        <rl-tag-input *ngIf="keyWords.length != 0" [(ngModel)]="keyWords" ng-readonly="all"></rl-tag-input>
+                        <label *ngIf="keyWords.length == 0">Отсутствуют</label>
                 </div>
             </div>
         </div> 
