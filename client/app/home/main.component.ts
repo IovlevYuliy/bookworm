@@ -14,26 +14,30 @@ export class MainComponent {
 		private route: ActivatedRoute,
         private alertService: AlertService) { }
 
+	currentUser: any;
 	@ViewChild('chart') chartDOM: ElementRef;
 	// private fragment: string;
 
     ngOnInit() {
 		// this.route.fragment.subscribe(fragment => { this.fragment = fragment; });
-		let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-		this.bookService.getFavouriteBooksStatistics(currentUser.UserId)
-		.subscribe(
-			data => {
-				if (data.length != 0)
-				{
-					this.drawChart([data[0].readNow, data[0].wantToRead, data[0].alreadyRead, data[0].gaveUp]);
-				}
-				else{
-					this.drawChart([0,0,0,0]);
-				}
-			},
-			error => {
-				this.alertService.error(error);
-			});
+		this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+		if (this.currentUser)
+		{
+			this.bookService.getFavouriteBooksStatistics(this.currentUser.UserId)
+			.subscribe(
+				data => {
+					if (data.length != 0)
+					{
+						this.drawChart([data[0].readNow, data[0].wantToRead, data[0].alreadyRead, data[0].gaveUp]);
+					}
+					else{
+						this.drawChart([0,0,0,0]);
+					}
+				},
+				error => {
+					this.alertService.error(error);
+				});
+		}
 	} 
 
 	ngAfterViewInit(): void {

@@ -2,6 +2,7 @@
 import { AuthenticationService } from './_services/index';
 import { Router } from '@angular/router';
 import { EmitterService } from './_services/index';
+import { User } from './_models/index';
 
 @Component({
     moduleId: module.id,
@@ -14,7 +15,7 @@ export class AppComponent implements OnInit{
         title: ""
     };
     subscription: any;
-    currentUser: any;
+    currentUser: User;
 
     constructor(
         private router: Router,
@@ -25,6 +26,7 @@ export class AppComponent implements OnInit{
     	this.currentUser = JSON.parse(localStorage.getItem('currentUser'));	
         this.subscription = this.emitterService.getNavChangeEmitter()
             .subscribe((user: any) => {
+                console.log('user', user);
                 this.currentUser = user;
             });
     }
@@ -33,6 +35,7 @@ export class AppComponent implements OnInit{
     {
     	this.authenticationService.logout();
     	this.router.navigate(['/']);
+        this.currentUser = null;
     }
 
     ngOnDestroy() {

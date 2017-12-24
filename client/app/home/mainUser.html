@@ -47,7 +47,7 @@
           <span class="sr-only">Next</span>
         </a>
       </div>
-      <div class="container marketing">
+      <div *ngIf='currentUser' class="container marketing">
           <div style="text-align: center;">
               <div style="width: 500px; margin: 0 auto;">
                 <h5 id="fave"><i>Книги в Вашем избранном</i></h5>
@@ -60,7 +60,6 @@
       </div>
 
       <footer class="container">
-        <p class="float-right"><a href="#">Наверх</a></p>
         <p>&copy; 2017 YAI Team</p>        
       </footer>
 
