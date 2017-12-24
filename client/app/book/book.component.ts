@@ -20,7 +20,6 @@ export class BookComponent implements OnInit {
         private route: ActivatedRoute,
         private alertService: AlertService,
         private _SendDataService: SendDataService) {
-        console.log(this._SendDataService.getData());
     }
 
     ngOnInit() {

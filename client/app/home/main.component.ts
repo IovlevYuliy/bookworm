@@ -2,6 +2,8 @@ import { ViewChild, Component, ElementRef, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 // import { BookDetails } from '../_models/index';
 import { BookService, AlertService } from '../_services/index';
+import { SendDataService } from '../_services/data.service';
+import { Router } from '@angular/router';
  declare var Chart: any;
 
 @Component({
@@ -11,29 +13,34 @@ import { BookService, AlertService } from '../_services/index';
 
 export class MainComponent {
     constructor(private bookService: BookService,
+    	private router: Router,
 		private route: ActivatedRoute,
-        private alertService: AlertService) { }
+        private alertService: AlertService,
+        private _SendDataService: SendDataService) { }
 
 	@ViewChild('chart') chartDOM: ElementRef;
 	// private fragment: string;
-
+	currentUser: any;
     ngOnInit() {
 		// this.route.fragment.subscribe(fragment => { this.fragment = fragment; });
-		let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-		this.bookService.getFavouriteBooksStatistics(currentUser.UserId)
-		.subscribe(
-			data => {
-				if (data.length != 0)
-				{
-					this.drawChart([data[0].readNow, data[0].wantToRead, data[0].alreadyRead, data[0].gaveUp]);
-				}
-				else{
-					this.drawChart([0,0,0,0]);
-				}
-			},
-			error => {
-				this.alertService.error(error);
-			});
+		this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+		if (this.currentUser)
+		{
+			this.bookService.getFavouriteBooksStatistics(this.currentUser.UserId)
+			.subscribe(
+				data => {
+					if (data.length != 0)
+					{
+						this.drawChart([data[0].readNow, data[0].wantToRead, data[0].alreadyRead, data[0].gaveUp]);
+					}
+					else{
+						this.drawChart([0,0,0,0]);
+					}
+				},
+				error => {
+					this.alertService.error(error);
+				});
+		}
 	} 
 
 	ngAfterViewInit(): void {
@@ -41,10 +48,25 @@ export class MainComponent {
 		//   document.querySelector('#' + this.fragment).scrollIntoView();
 		// } catch (e) { }
 	  }
-	  scrollTo(place:string) {
+	scrollTo(place:string) {
 		document.querySelector('#'+place).scrollIntoView();
 		
-	  }
+	}
+
+	getRandomBook(){
+		this.bookService.getRandomBook()
+            .subscribe(
+                data => {
+                    console.log('getbookresult', data);
+                    this._SendDataService.setData(data);
+                    this.router.navigate(['/bookDetails']);
+                },
+                error => {
+                    this.alertService.error(error);
+                    console.log(error);
+                });
+	}
+
 	drawChart(userBooksStatistics : Array<Number>) {
 		let donutCtx = this.chartDOM.nativeElement.getContext('2d');		
 		var data = {

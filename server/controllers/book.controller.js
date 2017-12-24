@@ -15,6 +15,8 @@ router.get('/moderator', getBookWithNewKeyWords);
 router.get('/favebooksstat',getFaveBooksStat);
 router.get('/favebookslist',getFaveBooksList);
 router.get('/statusname', getStatusNameById);
+router.get('/random', getRandomBook);
+
 
 module.exports = router;
 
@@ -24,6 +26,17 @@ function findBook(req, res) {
     bookService.find(query.title)
         .then(function (data) {
             res.send(data);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function getRandomBook(req, res){
+    bookService.getRandomBook()
+        .then(function (data) {
+            console.log('sendddd', data);
+            res.json(data);
         })
         .catch(function (err) {
             res.status(400).send(err);
