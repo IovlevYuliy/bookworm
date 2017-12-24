@@ -55,10 +55,24 @@ function findKeyWord(keyWord) {
         })
 }
 
+function existUser(login) {
+    let queryExistUser = `SELECT * FROM [User] WHERE Login = '${login}'`;
+
+    return executeQuery(queryExistUser)
+        .then((res) => {
+            if (res.recordset.rowsAffected === 0 || !res.recordset[0]) {
+                return Promise.resolve(null);
+            } else {
+                return Promise.resolve(res.recordset[0]);
+            }
+        })
+}
+
 module.exports = {
     executeQuery: executeQuery,
     getStatus: getStatus,
     removeKeyWord: removeKeyWord,
     addKeyWord: addKeyWord,
-    findKeyWord: findKeyWord
+    findKeyWord: findKeyWord,
+    existUser: existUser
 };

@@ -23,7 +23,7 @@ export class RegisterComponent {
             .subscribe(
                 data => {
                     console.log('ddddd', data);
-                    if (data.isExist == false)
+                    if (!data.isExist)
                     {
                         this.alertService.success('Регистрация прошла успешно', true);
                         this.router.navigate(['/login']);
