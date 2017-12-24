@@ -18,6 +18,7 @@ export class MainComponent {
         private alertService: AlertService,
         private _SendDataService: SendDataService) { }
 
+	currentUser: any;
 	@ViewChild('chart') chartDOM: ElementRef;
 	// private fragment: string;
 	currentUser: any;

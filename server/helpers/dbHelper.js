@@ -56,7 +56,7 @@ function findKeyWord(keyWord) {
 }
 
 function existUser(login) {
-    let queryExistUser = `SELECT * FROM [User] WHERE Login = '${login}'`;
+    let queryExistUser = `SELECT * FROM [User] U inner join UserRole UR ON U.UserRoleId = UR.UserRoleId WHERE Login = '${login}'`;
 
     return executeQuery(queryExistUser)
         .then((res) => {
