@@ -16,6 +16,7 @@ service.getFaveBooksStat = getFaveBooksStat;
 service.getFavouriteBooksList = getFavouriteBooksList;
 service.getStatusNameById = getStatusNameById;
 service.getBookById = getBookById;
+service.UpdateBookInfo = UpdateBookInfo;
 
 module.exports = service;
 
@@ -57,20 +58,19 @@ function getFaveBooksStat(userId){
 
 function getInfo(title, authors, userId) {
     logger.info('getInfo');
-    // var queryGetStatus = `SELECT B.BookId, status, UserRating, RatingCount, EstimatedRating from ((BookStatus BS inner join FavouriteBook FB on BS.BookStatusId = FB.BookStatusId) 
-    //         inner join Book B ON 
-    //         B.BookId = FB.BookId) where B.title = '${title}' AND B.authors = '${authors}' AND FB.UserId = '${userId}'`;
-    var queryGetStatus = `select B.BookId, FB.Status, FB.UserRating, B.RatingCount, B.EstimatedRating, KW.Word
-            from (((Book B left join 
-                ( select FB.BookId, FB.UserRating, BS.Status, FB.UserId
-                from FavouriteBook FB inner join
-                        BookStatus BS on FB.BookStatusId = BS.BookStatusId 
-                where FB.UserId = '${userId}'
-                ) FB on B.BookId = FB.BookId )
-                left join BookKeyWord BKW ON B.BookId = BKW.BookId)
-                left join KeyWord KW ON KW.KeyWordId = BKW.KeyWordId) where (BKW.IsChecked = 'true' OR 
-                BKW.IsChecked IS NULL) AND B.title = '${title}' AND B.authors = '${authors}'`;
-
+    var queryGetStatus = `select B.BookId, FB.Status, FB.UserRating, B.RatingCount, B.EstimatedRating, KW.Word 
+                            from 
+                            ( 
+                                Book B left join 
+                                ( 
+                                    select FB.BookId, FB.UserRating, BS.Status, FB.UserId 
+                                    from FavouriteBook FB inner join 
+                                    BookStatus BS on FB.BookStatusId = BS.BookStatusId 
+                                    where FB.UserId = '${userId}' 
+                                ) FB on B.BookId = FB.BookId left join 
+                                  BookKeyWord BKW ON B.BookId = BKW.BookId and (BKW.IsChecked = 1 OR BKW.IsChecked IS NULL) left join 
+                                  KeyWord KW ON KW.KeyWordId = BKW.KeyWordId 
+                            ) where B.title = '${title}' AND B.authors = '${authors}'`;
     console.log(queryGetStatus);
     return db.executeQuery(queryGetStatus)
         .then((res) => {
@@ -317,6 +317,18 @@ function getBookById(bookId)
         .then((res) => {
             return Promise.resolve(res.recordset[0]);
         })
+}
+
+function UpdateBookInfo(book)
+{
+    logger.info('UpdateGeneralInfo');
+    var queryUpdateGeneralInfo = `UPDATE [Book]
+                                    SET [title] = '${book.title}'
+                                    ,[authors] = '${book.authors}'
+                                    ,[description] = '${book.description}'
+                                    ,[publishedDate] = '${book.publishedDate}'
+                                    WHERE [BookId] = '${book.BookId}'`;  
+    return db.executeQuery(queryUpdateGeneralInfo);
 }
 
 function prepareBook(book) {

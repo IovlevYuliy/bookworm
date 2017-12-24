@@ -16,6 +16,7 @@ router.get('/favebooksstat',getFaveBooksStat);
 router.get('/favebookslist',getFaveBooksList);
 router.get('/statusname', getStatusNameById);
 router.get('/bookEdit', getBookById);
+router.post('/updateBook', updateBookInfo);
 
 
 module.exports = router;
@@ -156,4 +157,16 @@ function getBookRates(req, res)
     //     .catch(function (err) {
     //         res.status(400).send(err);
     //     });
+}
+
+function updateBookInfo(req, res)
+{
+    console.log(req.body);
+    bookService.UpdateBookInfo(req.body)
+        .then(function (data) {
+            res.json(data);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
 }

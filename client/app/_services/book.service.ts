@@ -90,4 +90,9 @@ export class BookService {
         requestOptions.search = params;
         return this.http.get('/books/bookEdit', requestOptions).map((response: Response) => response.json());
     }
+
+    updateBookInfo(book: BookDetails) 
+    {
+        return this.http.post('/books/updateBook', book);        
+    }
 }
