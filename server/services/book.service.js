@@ -70,9 +70,14 @@ function getInfo(title, authors, userId) {
                 left join KeyWord KW ON KW.KeyWordId = BKW.KeyWordId) where (BKW.IsChecked = 'true' OR 
                 BKW.IsChecked IS NULL) AND B.title = '${title}' AND B.authors = '${authors}'`;
 
+    console.log(queryGetStatus);
     return db.executeQuery(queryGetStatus)
         .then((res) => {
+            console.log(res);
             return Promise.resolve(res.recordset);
+        })
+        .catch((err) =>{
+            console.log(err);
         })
 }
 
@@ -107,7 +112,7 @@ function getCatalog() {
 
 function addInFavourite(favouriteBook) {
     logger.info('addInFavourite');
-    prepareBook(favouriteBook.book);
+    
     let favouriteBookInfo = {};
    
     return checkBook(favouriteBook.book)
@@ -116,12 +121,13 @@ function addInFavourite(favouriteBook) {
                 return AddBook(favouriteBook.book);
             else
             {
-                return Promise.resolve(book_id);
-                // favouriteBook.book.BookId = book_id;
-                // return updateBook(favouriteBook.book);
+                //return Promise.resolve(book_id);
+                favouriteBook.book.BookId = book_id;
+                return updateBook(favouriteBook.book);
             }
         })
         .then((book_id) => {
+            console.log('11111');
             favouriteBookInfo.book_id = book_id;
             return CheckFavouriteBook(book_id, favouriteBook.user.UserId);
         })
@@ -136,11 +142,8 @@ function addInFavourite(favouriteBook) {
             else
                 return UpdateFavouriteBook(favouriteBookInfo.book_id, favouriteBook, favouriteBookInfo.statusId);
         })
-        .then((book_id) => {
-            let bookId = {
-                bookId: book_id
-            }
-            return Promise.resolve(bookId);
+        .then(() => {
+            return Promise.resolve(favouriteBookInfo.book_id);
         })
 }
 
@@ -160,15 +163,15 @@ function checkBook(book) {
 
 function updateBook(book) {
     logger.info('UpdateBook');
-    prepareBook(book);
 
     var queryUpdateBook = `UPDATE Book SET title = '${book.title}', authors = '${book.authors}', 
-    description = '${book.description}', EstimatedRating = ${book.estimatedRating}, RatingCount = ${book.ratingCount}
+    EstimatedRating = ${book.estimatedRating}, RatingCount = ${book.ratingCount}
     where BookId = '${book.BookId}'`;
     
+    console.log(queryUpdateBook);
     return db.executeQuery(queryUpdateBook)
-        .then((res) => {
-            return Promise.resolve(res.recordset[0].BookId);
+        .then(() => {
+            return Promise.resolve(book.BookId);
         })
 }
 
@@ -185,6 +188,7 @@ function CheckFavouriteBook(book_id, userId) {
 
 function AddBook(book) {
     logger.info('add book');
+    prepareBook(book);
     var queryInsertBook = `insert into Book(title, authors, link, thumbnail, publishedDate, description, EstimatedRating) OUTPUT Inserted.BookId values
             ('${book.title}', '${book.authors}', '${book.link}', '${book.thumbnail}', ${book.publishedDate},
              '${book.description}', '${book.estimatedRating}')`;
@@ -198,7 +202,7 @@ function AddBook(book) {
 function AddBookFavourite(bookId, favourBook, statusId) {
     logger.info('AddFavourite');
     var queryInsertFavouriteBook = `insert into FavouriteBook(UserId, BookId, BookStatusId, UserRating) values
-            ('${favourBook.user.UserId}', '${bookId}', '${statusId}', 0)`;
+            ('${favourBook.user.UserId}', '${bookId}', '${statusId}', '${favourBook.book.userRating}')`;
 
     return db.executeQuery(queryInsertFavouriteBook)
         .then(() => {
@@ -208,9 +212,8 @@ function AddBookFavourite(bookId, favourBook, statusId) {
 
 function UpdateFavouriteBook(bookId, favourBook, statusId) {
     logger.info('UpdateFavourite');
-    var queryUpdateFavouriteBook = `UPDATE FavouriteBook SET BookStatusId = '${statusId}' where
+    var queryUpdateFavouriteBook = `UPDATE FavouriteBook SET BookStatusId = '${statusId}', UserRating = ${favourBook.book.userRating} where
         UserId = '${favourBook.user.UserId}' AND BookId = '${bookId}'`;
-
     return db.executeQuery(queryUpdateFavouriteBook);
 }
 
@@ -315,6 +318,9 @@ function prepareBook(book) {
     book.authors = mysql_real_escape_string(book.authors);
     if (book.description)
         book.description = mysql_real_escape_string(book.description);
+
+    if (!book.publishedDate)
+        book.publishedDate = null;
 }
 
 function mysql_real_escape_string (str) {
