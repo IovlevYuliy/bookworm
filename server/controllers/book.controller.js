@@ -101,7 +101,7 @@ function getCatalog(req, res) {
 function addFavourite(req, res) {
     bookService.addInFavourite(req.body)
         .then(function (data) {
-            res.json(data);
+            res.send(data);
         })
         .catch(function (err) {
             res.status(400).send(err);
