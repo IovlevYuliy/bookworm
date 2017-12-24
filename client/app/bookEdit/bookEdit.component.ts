@@ -20,7 +20,8 @@ export class BookEditComponent implements OnInit, OnDestroy,  AfterViewInit{
     
     constructor(private route: ActivatedRoute,
                 private bookService: BookService, 
-                private alertService: AlertService) {
+                private alertService: AlertService,
+                private _SendDataService: SendDataService) {
         this.bookDetails = new BookDetails("", "", "", "", "", "", "", 0, 0, 0);
     }    
 
@@ -31,6 +32,8 @@ export class BookEditComponent implements OnInit, OnDestroy,  AfterViewInit{
             .subscribe(
                 data => {
                     this.bookDetails = data;
+                    // var textareas = document.querySelectorAll('textarea');
+                    // autosize(textareas);
                 },
                 error => {
                     this.alertService.error(error);
@@ -47,4 +50,17 @@ export class BookEditComponent implements OnInit, OnDestroy,  AfterViewInit{
     ngOnDestroy() {
         this.sub.unsubscribe();
       }
+
+    SaveChanges() {
+        var fdgfd="";
+        this.bookService.updateBookInfo(this.bookDetails)
+            .subscribe(
+                data => {
+                    this.alertService.success('Информация о книге успешно обновлена', true);
+                  //  this.bookDetails = data;
+                },
+                error => {
+                    this.alertService.error(error);
+                }); 
+    }
 }

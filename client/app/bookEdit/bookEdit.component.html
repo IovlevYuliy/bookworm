@@ -27,7 +27,7 @@
                     <label>Год издания: </label>
                 </div>
                 <div class="col-md-9">
-                    <input [(ngModel)]="bookDetails.publishedDate" type="number" min="1000" class="form-control" />
+                    <input [(ngModel)]="bookDetails.publishedDate" type="text" class="form-control" />
                 </div>
             </div>
             <div class="info-row">
@@ -48,11 +48,14 @@
             </div>
         </div>
         <div class="right">
-            <button class="btn btn-success" style="margin-top:5px">
+            <button class="btn btn-success" style="margin-top:5px" (click)="SaveChanges()">
                 Сохранить
             </button> |
-            <a [routerLink]="['bookDetails']" [queryParams]="{ bookid: 'bookDetails.BookId' }">Отмена</a> 
-        <!-- <b (click)="this._SendDataService.setData(bookDetails);">отмена</b> -->
+            <a routerLink="/bookDetails" routerLinkActive="active">
+                <button class="btn btn-link" (click)="this._SendDataService.setData(bookDetails);">
+                        Отмена
+                </button>
+            </a>
         </div>
     </div>
 </div>
