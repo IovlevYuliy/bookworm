@@ -2,6 +2,8 @@ import { ViewChild, Component, ElementRef, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 // import { BookDetails } from '../_models/index';
 import { BookService, AlertService } from '../_services/index';
+import { SendDataService } from '../_services/data.service';
+import { Router } from '@angular/router';
  declare var Chart: any;
 
 @Component({
@@ -11,13 +13,15 @@ import { BookService, AlertService } from '../_services/index';
 
 export class MainComponent {
     constructor(private bookService: BookService,
+    	private router: Router,
 		private route: ActivatedRoute,
-        private alertService: AlertService) { }
+        private alertService: AlertService,
+        private _SendDataService: SendDataService) { }
 
 	currentUser: any;
 	@ViewChild('chart') chartDOM: ElementRef;
 	// private fragment: string;
-
+	currentUser: any;
     ngOnInit() {
 		// this.route.fragment.subscribe(fragment => { this.fragment = fragment; });
 		this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -45,10 +49,25 @@ export class MainComponent {
 		//   document.querySelector('#' + this.fragment).scrollIntoView();
 		// } catch (e) { }
 	  }
-	  scrollTo(place:string) {
+	scrollTo(place:string) {
 		document.querySelector('#'+place).scrollIntoView();
 		
-	  }
+	}
+
+	getRandomBook(){
+		this.bookService.getRandomBook()
+            .subscribe(
+                data => {
+                    console.log('getbookresult', data);
+                    this._SendDataService.setData(data);
+                    this.router.navigate(['/bookDetails']);
+                },
+                error => {
+                    this.alertService.error(error);
+                    console.log(error);
+                });
+	}
+
 	drawChart(userBooksStatistics : Array<Number>) {
 		let donutCtx = this.chartDOM.nativeElement.getContext('2d');		
 		var data = {

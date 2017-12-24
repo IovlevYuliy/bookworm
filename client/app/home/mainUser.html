@@ -23,7 +23,7 @@
               <div class="carousel-caption" style="color:black">
                 <h1>Случайная книга</h1>
                 <p>Хочется найти то, не знаю что? Тогда кликайте сюда, и мы подберем вам книгу, от которой не оторваться. Или откройте наш каталог и сами выберете книгу по душе.</p>
-                <p><a class="btn btn-lg btn-warning" href="#" role="button">Возвать к богам рандома</a> | <a class="btn btn-lg btn-warning" href="/books/catalog" role="button">Просмотреть каталог</a></p>
+                <p><a class="btn btn-lg btn-warning" (click)="getRandomBook()" role="button">Возвать к богам рандома</a> | <a class="btn btn-lg btn-warning" href="/books/catalog" role="button">Просмотреть каталог</a></p>
               </div>
             </div>
           </div>
@@ -54,7 +54,7 @@
                 <small>чтобы перейти к интересующему разделу - кликните на него</small>
               </div>
           </div>
-        <div class="row">          
+        <div  class="row">          
           <canvas #chart width="400" height="400" onClick="myFunction()"></canvas>		  
         </div>
       </div>

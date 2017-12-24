@@ -20,6 +20,10 @@ export class BookService {
         return this.http.get('/books/catalog').map((response: Response) => response.json());
     }
 
+    getRandomBook(){
+        return this.http.get('/books/random').map((response: Response) => response.json());
+    }
+
     getBookInfo(title: string, authors: string, userId: string){
         let params: URLSearchParams = new URLSearchParams();
 
@@ -78,5 +82,16 @@ export class BookService {
         let requestOptions = new RequestOptions();
         requestOptions.search = params;        
         return this.http.get('/books/statusname', requestOptions).map((response: Response) => response.json());
+    }
+
+    getBookById(bookId: string)
+    {
+       let params: URLSearchParams = new URLSearchParams();
+
+        params.set('bookId', bookId);
+
+        let requestOptions = new RequestOptions();
+        requestOptions.search = params;
+        return this.http.get('/books/bookEdit', requestOptions).map((response: Response) => response.json());
     }
 }
