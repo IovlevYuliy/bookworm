@@ -6,18 +6,19 @@ var logger = require('../log');
 
 // routes
 router.get('/', findBook);
-router.post('/favour', AddFavourite);
+router.post('/favour', addFavourite);
 router.post('/moderator', updateTags)
 router.get('/catalog', getCatalog);
-router.get('/bookstatus', GetBookStatus);
+router.get('/bookstatus', getBookStatus);
 router.get('/bookDetails', getBookInfo);
 router.get('/moderator', getBookWithNewKeyWords);
-router.get('/favebooksstat',getFaveBooksStat)
+router.get('/favebooksstat',getFaveBooksStat);
+router.get('/favebookslist',getFaveBooksList);
+router.get('/statusname', getStatusNameById);
 
 module.exports = router;
 
-function findBook(req, res)
-{
+function findBook(req, res) {
 	var params = url.parse(req.url, true);
  	var query = params.query;
     bookService.find(query.title)
@@ -29,13 +30,34 @@ function findBook(req, res)
         });
 } 
 
-function getFaveBooksStat(req, res) 
-{
+function getFaveBooksStat(req, res)  {
     var params = url.parse(req.url, true);
     var query = params.query;
-    // console.log(query);   
-    
     bookService.getFaveBooksStat(query.userId)
+        .then(function (data) {
+            res.send(data);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function getFaveBooksList(req, res){
+    var params = url.parse(req.url, true);
+    var query = params.query; 
+    bookService.getFavouriteBooksList(query)
+        .then(function (data) {
+            res.send(data);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function getStatusNameById(req, res) {
+    var params = url.parse(req.url, true);
+    var query = params.query; 
+    bookService.getStatusNameById(query.statusId)
         .then(function (data) {
             res.send(data);
         })
@@ -76,7 +98,7 @@ function getCatalog(req, res) {
         });
 }
 
-function AddFavourite(req, res) {
+function addFavourite(req, res) {
     bookService.addInFavourite(req.body)
         .then(function (data) {
             res.send(data);
@@ -96,7 +118,7 @@ function updateTags(req, res) {
         });
 }
 
-function GetBookStatus(req, res)
+function getBookStatus(req, res)
 {
     var params = url.parse(req.url, true);
     var query = params.query;

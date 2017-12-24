@@ -19,7 +19,7 @@ function getStatus(title, authors, userId) {
 
     return executeQuery(queryGetStatus)
         .then((res) => {
-            if (res.recordset.rowsAffected === 0 || !response.recordset[0]) {
+            if (res.recordset.rowsAffected === 0 || !res.recordset[0]) {
                 return Promise.resolve([]);
             } else {
                 return Promise.resolve(res.recordset);
@@ -43,14 +43,29 @@ function addKeyWord(keyWord) {
 }
 
 function findKeyWord(keyWord) {
-    let queryFindWord = `SELECT KeyWordId FROM KeyWord where word = '${word}'`;
+    let queryFindWord = `SELECT KeyWordId FROM KeyWord where word = '${keyWord}'`;
 
     return executeQuery(queryFindWord)
-    	if (res.recordset.rowsAffected === 0 || !response.recordset[0]) {
-            return Promise.resolve(null);
-        } else {
-            return Promise.resolve(res.recordset[0].KeyWordId);
-        }
+        .then((res) => {
+        	if (res.recordset.rowsAffected === 0 || !res.recordset[0]) {
+                return Promise.resolve(null);
+            } else {
+                return Promise.resolve(res.recordset[0].KeyWordId);
+            }
+        })
+}
+
+function existUser(login) {
+    let queryExistUser = `SELECT * FROM [User] WHERE Login = '${login}'`;
+
+    return executeQuery(queryExistUser)
+        .then((res) => {
+            if (res.recordset.rowsAffected === 0 || !res.recordset[0]) {
+                return Promise.resolve(null);
+            } else {
+                return Promise.resolve(res.recordset[0]);
+            }
+        })
 }
 
 module.exports = {
@@ -58,5 +73,6 @@ module.exports = {
     getStatus: getStatus,
     removeKeyWord: removeKeyWord,
     addKeyWord: addKeyWord,
-    findKeyWord: findKeyWord
+    findKeyWord: findKeyWord,
+    existUser: existUser
 };
