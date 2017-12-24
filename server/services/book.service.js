@@ -13,6 +13,8 @@ service.getBookWithNewKeyWords = getBookWithNewKeyWords;
 service.updateTags = updateTags;
 service.getBookInfo = getBookInfo;
 service.getFaveBooksStat = getFaveBooksStat;
+service.getFavouriteBooksList = getFavouriteBooksList;
+service.getStatusNameById = getStatusNameById;
 
 module.exports = service;
 
@@ -32,42 +34,24 @@ function getBookInfo(book) {
 
 function getFaveBooksStat(userId){
     logger.info('getFaveBooksStat');
-    var connection = new sql.ConnectionPool(config.dbConfig);
-    return new Promise((resolve, reject) => {
-        connection.connect()
-            .then(() =>{
-                var request = new sql.Request(connection);
-                var queryfaveStat = `select max(t.readNow) readNow, max(t.wantToRead) wantToRead, max(t.alreadyRead) alreadyRead, max(t.gaveUp) gaveUp
-                                from (
-                                    SELECT 
-                                count(case when FavouriteBook.BookStatusId = '4BA77A47-7A4A-40D4-9643-DB856125F6B2'then FavouriteBook.BookStatusId else null end) readNow,
-                                count(case when FavouriteBook.BookStatusId = '9B86AD37-88ED-4CE7-9029-1030A42719F8'then FavouriteBook.BookStatusId else null end) wantToRead,
-                                count(case when FavouriteBook.BookStatusId = '8CBB414C-ED49-414B-8631-3DF4F92CD9C9'then FavouriteBook.BookStatusId else null end) alreadyRead,
-                                count(case when FavouriteBook.BookStatusId = '407FBC8A-9AB4-4DB4-9D9C-4D71B926593C'then FavouriteBook.BookStatusId else null end) gaveUp
-                                    FROM            FavouriteBook INNER JOIN
-                                                            BookStatus ON FavouriteBook.BookStatusId = BookStatus.BookStatusId
-                                    WHERE        (FavouriteBook.UserId = '${userId}')
-                                    GROUP BY FavouriteBook.UserId, BookStatus.Status
-                                )t`;    
-                return new Promise(function (resolve, reject) {
-                    return request.query(queryfaveStat, function (err, response) {
-                        if (err) {
-                            logger.error(err);
-                            reject(err);
-                        }
-                        else {
-                            resolve(response.recordset);
-                        }
-                    });
-                });
-            })
-            .then((data) => {
-                resolve(data);
-            })
-            .catch((err) => {
-                reject(err);
-            })
-    });
+  
+    let queryfaveStat = `select max(t.readNow) readNow, max(t.wantToRead) wantToRead, max(t.alreadyRead) alreadyRead, max(t.gaveUp) gaveUp
+                    from (
+                        SELECT 
+                    count(case when FavouriteBook.BookStatusId = '4BA77A47-7A4A-40D4-9643-DB856125F6B2'then FavouriteBook.BookStatusId else null end) readNow,
+                    count(case when FavouriteBook.BookStatusId = '9B86AD37-88ED-4CE7-9029-1030A42719F8'then FavouriteBook.BookStatusId else null end) wantToRead,
+                    count(case when FavouriteBook.BookStatusId = '8CBB414C-ED49-414B-8631-3DF4F92CD9C9'then FavouriteBook.BookStatusId else null end) alreadyRead,
+                    count(case when FavouriteBook.BookStatusId = '407FBC8A-9AB4-4DB4-9D9C-4D71B926593C'then FavouriteBook.BookStatusId else null end) gaveUp
+                        FROM            FavouriteBook INNER JOIN
+                                                BookStatus ON FavouriteBook.BookStatusId = BookStatus.BookStatusId
+                        WHERE        (FavouriteBook.UserId = '${userId}')
+                        GROUP BY FavouriteBook.UserId, BookStatus.Status
+                    )t`;    
+           
+    return db.executeQuery(queryfaveStat)
+        .then((res) => {
+            return Promise.resolve(res.recordset);
+        })
 }
 
 function getInfo(title, authors, userId) {
@@ -293,6 +277,30 @@ function checkWord(keyWord) {
 function addWord(keyWord) {
     logger.info('addWord');
     return db.addKeyWord(keyWord);
+}
+
+function getStatusNameById(statusId) {
+    logger.info('getStatusNameById');
+    let queryStatus = `SELECT        Status
+                        FROM            BookStatus
+                        WHERE        (BookStatusId = '${statusId}')`;  
+
+    return db.executeQuery(queryStatus)
+        .then((res) => {
+            return Promise.resolve(res.recordset[0].Status);
+        })
+}
+
+function getFavouriteBooksList(userFave) {
+    let queryfaveStat = `SELECT       Book.*
+                         FROM            FavouriteBook INNER JOIN
+                                         Book ON FavouriteBook.BookId = Book.BookId
+                         WHERE        (FavouriteBook.UserId = '${userFave.userId}') AND 
+                                      (FavouriteBook.BookStatusId = '${userFave.statusId}')`;    
+    return db.executeQuery(queryfaveStat)
+        .then((res) => {
+            return Promise.resolve(res.recordset);
+        })
 }
 
 function prepareBook(book) {

@@ -11,12 +11,14 @@ import { BookService, AlertService } from '../_services/index';
 
 export class MainComponent {
     constructor(private bookService: BookService,
-        private route: ActivatedRoute,
+		private route: ActivatedRoute,
         private alertService: AlertService) { }
 
 	@ViewChild('chart') chartDOM: ElementRef;
+	// private fragment: string;
 
     ngOnInit() {
+		// this.route.fragment.subscribe(fragment => { this.fragment = fragment; });
 		let currentUser = JSON.parse(localStorage.getItem('currentUser'));
 		this.bookService.getFavouriteBooksStatistics(currentUser.UserId)
 		.subscribe(
@@ -33,6 +35,16 @@ export class MainComponent {
 				this.alertService.error(error);
 			});
 	} 
+
+	ngAfterViewInit(): void {
+		// try {
+		//   document.querySelector('#' + this.fragment).scrollIntoView();
+		// } catch (e) { }
+	  }
+	  scrollTo(place:string) {
+		document.querySelector('#'+place).scrollIntoView();
+		
+	  }
 	drawChart(userBooksStatistics : Array<Number>) {
 		let donutCtx = this.chartDOM.nativeElement.getContext('2d');		
 		var data = {
@@ -62,7 +74,27 @@ export class MainComponent {
     			"type": 'horizontalBar',
 		    	"data": data,
 		    
-			    "options": {
+			     "options": {
+					"onClick": function(event:any, elem:any) {
+						var elem = elem[0];
+						if (!elem) return; // check and return if not clicked on bar/data
+						
+						var type = '';
+						if(elem._index === 0) {
+							type = '4BA77A47-7A4A-40D4-9643-DB856125F6B2';
+						}
+						if(elem._index === 1) {
+							type = '9B86AD37-88ED-4CE7-9029-1030A42719F8';
+						}
+						if(elem._index === 2) {
+							type='8CBB414C-ED49-414B-8631-3DF4F92CD9C9';
+						}
+						if(elem._index === 3) {
+							type='407FBC8A-9AB4-4DB4-9D9C-4D71B926593C';
+						}
+						var uri = this.canvas.baseURI + 'favouriteBooks/' + type;
+						location.href = uri;
+					},
 				"maintainAspectRatio": false,
 			        "scales": {
 						"xAxes": [{
@@ -73,6 +105,6 @@ export class MainComponent {
 			        }
 			    }
             }
-        );
+		);
 	}
 }
