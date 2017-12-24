@@ -1,5 +1,6 @@
 export class BookDetails {
     _id: string;
+    bookId: string;
     title: string;
     description: string;
     publishedDate: string;
@@ -13,7 +14,8 @@ export class BookDetails {
 
   //  keywords: Keyword[];
 
-    constructor(id: string, _name: string, _description: string, _publishedYear: string, _authors: string, _link: string, _image: string)
+    constructor(id: string, _name: string, _description: string, _publishedYear: string, _authors: string, _link: string, _image: string, 
+        _estimatedRating : number, _ratingCount:number, _userRating:number)
     {
         this._id = id;
         this.title = _name;
@@ -22,5 +24,8 @@ export class BookDetails {
         this.publishedDate = _publishedYear;
         this.link = _link;
         this.thumbnail = _image;
+        this.estimatedRating = _estimatedRating;
+        this.ratingCount = _ratingCount;
+        this.userRating = _userRating;
     }
 }

@@ -1,6 +1,5 @@
 <div class="row book-container">
     <div class="col-md-3">
-        <!-- <img src={{bookDetails.thumbnail}} width="100%"  alt="Обложка книги">  -->
         <img *ngIf="bookDetails.thumbnail" src={{bookDetails.thumbnail}}  width="100%" alt="Обложка книги">
         <img *ngIf="!bookDetails.thumbnail"  src="../../asserts/empty-book.png"  width="100%" alt="Обложка книги">
 
@@ -20,14 +19,7 @@
                   (click)="AddBook(bookDetails,'Заброшена')">Заброшена</div>
                 </div>
               </div>
-        </div>
-        <div class="info-row" style="margin-top:20px">
-            Купить:
-        </div>
-        <div class="info-row">
-            <a href={{bookDetails.link}}>{{bookDetails.link}}</a>
-        </div>
-         
+        </div>         
     </div>
     <div class="col-md-8">
         <div class="form-group row">                    
@@ -36,8 +28,9 @@
             </span>
         </div>
         <div class="info-block">
-            <div class="info-row">            
-                    <label>Автор(-ы): </label> <i class="detail"> {{ bookDetails.authors}}</i>            
+            <div class="info-row">
+                <label>Автор(-ы): </label> <i class="detail"> {{ bookDetails.authors}}</i>
+                <a class="btn btn-sm btn-info right" [routerLink]="['/bookEdit', bookDetails._id]">Редактировать</a>
             </div>
             <div class="info-row">            
                     <label>Год издания: </label> <span class="detail"> {{ bookDetails.publishedDate}}</span>            
@@ -55,7 +48,11 @@
                 <div id="2" class="avg-rate"></div>
                 <div id="3" class="avg-rate"></div>
                 <div id="4" class="avg-rate"></div>
-                <div id="5" class="avg-rate"></div>   {{bookDetails.estimatedRating}}            
+                <div id="5" class="avg-rate"></div>   {{avgRating}}           
+            </div>
+
+            <div class="info-row">
+                <label>Купить: </label> <i class="detail"><a href={{bookDetails.link}}>{{bookDetails.link}}</a> </i>
             </div>
 
             <div class="info-row">

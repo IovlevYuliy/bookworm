@@ -12,10 +12,12 @@ service.getCatalog = getCatalog;
 service.getBookWithNewKeyWords = getBookWithNewKeyWords;
 service.updateTags = updateTags;
 service.getBookInfo = getBookInfo;
+service.getFaveBooksStat = getFaveBooksStat;
 
 module.exports = service;
 
 function find(key) {
+    logger.info('find');
     return new Promise((resolve, reject) => {
         books.search(key, function(error, results) {
             return error ? reject(error) : resolve(results);
@@ -24,13 +26,63 @@ function find(key) {
 }
 
 function getBookInfo(book) {
+    logger.info('getBookInfo');
     return getInfo(book.title, book.authors, book.userId);
 }
 
+function getFaveBooksStat(userId){
+    logger.info('getFaveBooksStat');
+    var connection = new sql.ConnectionPool(config.dbConfig);
+    return new Promise((resolve, reject) => {
+        connection.connect()
+            .then(() =>{
+                var request = new sql.Request(connection);
+                var queryfaveStat = `select max(t.readNow) readNow, max(t.wantToRead) wantToRead, max(t.alreadyRead) alreadyRead, max(t.gaveUp) gaveUp
+                                from (
+                                    SELECT 
+                                count(case when FavouriteBook.BookStatusId = '4BA77A47-7A4A-40D4-9643-DB856125F6B2'then FavouriteBook.BookStatusId else null end) readNow,
+                                count(case when FavouriteBook.BookStatusId = '9B86AD37-88ED-4CE7-9029-1030A42719F8'then FavouriteBook.BookStatusId else null end) wantToRead,
+                                count(case when FavouriteBook.BookStatusId = '8CBB414C-ED49-414B-8631-3DF4F92CD9C9'then FavouriteBook.BookStatusId else null end) alreadyRead,
+                                count(case when FavouriteBook.BookStatusId = '407FBC8A-9AB4-4DB4-9D9C-4D71B926593C'then FavouriteBook.BookStatusId else null end) gaveUp
+                                    FROM            FavouriteBook INNER JOIN
+                                                            BookStatus ON FavouriteBook.BookStatusId = BookStatus.BookStatusId
+                                    WHERE        (FavouriteBook.UserId = '${userId}')
+                                    GROUP BY FavouriteBook.UserId, BookStatus.Status
+                                )t`;    
+                return new Promise(function (resolve, reject) {
+                    return request.query(queryfaveStat, function (err, response) {
+                        if (err) {
+                            logger.error(err);
+                            reject(err);
+                        }
+                        else {
+                            resolve(response.recordset);
+                        }
+                    });
+                });
+            })
+            .then((data) => {
+                resolve(data);
+            })
+            .catch((err) => {
+                reject(err);
+            })
+    });
+}
+
 function getInfo(title, authors, userId) {
-    var queryGetStatus = `SELECT status, UserRating, RatingCount, EstimatedRating from ((BookStatus BS inner join FavouriteBook FB on BS.BookStatusId = FB.BookStatusId) 
-            inner join Book B ON 
-            B.BookId = FB.BookId) where B.title = '${title}' AND B.authors = '${authors}' AND FB.UserId = '${userId}'`;
+    logger.info('getInfo');
+    // var queryGetStatus = `SELECT B.BookId, status, UserRating, RatingCount, EstimatedRating from ((BookStatus BS inner join FavouriteBook FB on BS.BookStatusId = FB.BookStatusId) 
+    //         inner join Book B ON 
+    //         B.BookId = FB.BookId) where B.title = '${title}' AND B.authors = '${authors}' AND FB.UserId = '${userId}'`;
+    var queryGetStatus = `select B.BookId, FB.Status, FB.UserRating, B.RatingCount, B.EstimatedRating
+            from Book B left join 
+                ( select FB.BookId, FB.UserRating, BS.Status, FB.UserId
+                from FavouriteBook FB inner join
+                        BookStatus BS on FB.BookStatusId = BS.BookStatusId 
+                where FB.UserId = '${userId}'
+                ) FB on B.BookId = FB.BookId 
+            where B.title = '${title}' AND B.authors = '${authors}'`;
 
     return db.executeQuery(queryGetStatus)
         .then((res) => {
@@ -39,9 +91,10 @@ function getInfo(title, authors, userId) {
 }
 
 function getBookWithNewKeyWords() {
+    logger.info('getBookWithNewKeyWords');
     return getBooks()
         .catch((err) => {
-            console.log(err);
+            logger.error(err);
         })
 }
 
@@ -57,6 +110,7 @@ function getBooks() {
 }
 
 function getCatalog() {
+    logger.info('getCatalog');
     var queryGetAllBooks = `select * from Book`;
                     
     return db.executeQuery(queryGetAllBooks)
@@ -66,6 +120,7 @@ function getCatalog() {
 }
 
 function addInFavourite(favouriteBook) {
+    logger.info('addInFavourite');
     prepareBook(favouriteBook.book);
     let favouriteBookInfo = {};
    
@@ -74,15 +129,18 @@ function addInFavourite(favouriteBook) {
             if (!book_id)
                 return AddBook(favouriteBook.book);
             else
+            {
                 return Promise.resolve(book_id);
+                // favouriteBook.book.BookId = book_id;
+                // return updateBook(favouriteBook.book);
+            }
         })
         .then((book_id) => {
             favouriteBookInfo.book_id = book_id;
-            return checkFavouriteBook(book_id, favouriteBook.user.UserId);
+            return CheckFavouriteBook(book_id, favouriteBook.user.UserId);
         })
         .then((IsFavExists) => {
             favouriteBookInfo.IsFavExists = IsFavExists;
-            console.log(favouriteBookInfo);
             return GetStatusIdByName(favouriteBook.book.status);
         })
         .then((statusId) => {
@@ -92,13 +150,16 @@ function addInFavourite(favouriteBook) {
             else
                 return UpdateFavouriteBook(favouriteBookInfo.book_id, favouriteBook, favouriteBookInfo.statusId);
         })
-        .catch((err) => {
-            console.log(err);
+        .then((book_id) => {
+            let bookId = {
+                bookId: book_id
+            }
+            return Promise.resolve(bookId);
         })
 }
 
 function checkBook(book) {
-    console.log('checkBook');
+    logger.info('checkBook');
     var queryExistBook = `select BookId from Book where title = '${book.title}'  and authors = '${book.authors}'`;
     
     return db.executeQuery(queryExistBook)
@@ -111,8 +172,22 @@ function checkBook(book) {
         });
 }
 
-function checkFavouriteBook(book_id, userId) {
-    console.log('CheckFavouriteBook');
+function updateBook(book) {
+    logger.info('UpdateBook');
+    prepareBook(book);
+
+    var queryUpdateBook = `UPDATE Book SET title = '${book.title}', authors = '${book.authors}', 
+    description = '${book.description}', EstimatedRating = ${book.estimatedRating}, RatingCount = ${book.ratingCount}
+    where BookId = '${book.BookId}'`;
+    
+    return db.executeQuery(queryUpdateBook)
+        .then((res) => {
+            return Promise.resolve(res.recordset[0].BookId);
+        })
+}
+
+function CheckFavouriteBook(book_id, userId) {
+    logger.info('CheckFavouriteBook');
     var queryExistFavBook = `select BookId from FavouriteBook where BookId = '${book_id}'  and UserId = '${userId}'`;
     
     return db.executeQuery(queryExistFavBook)
@@ -126,7 +201,7 @@ function AddBook(book) {
     logger.info('add book');
     var queryInsertBook = `insert into Book(title, authors, link, thumbnail, publishedDate, description, EstimatedRating) OUTPUT Inserted.BookId values
             ('${book.title}', '${book.authors}', '${book.link}', '${book.thumbnail}', ${book.publishedDate},
-             '${book.description}', 1)`;
+             '${book.description}', '${book.estimatedRating}')`;
 
     return db.executeQuery(queryInsertBook)
         .then((res) => {
@@ -142,11 +217,10 @@ function AddBookFavourite(bookId, favourBook, statusId) {
     return db.executeQuery(queryInsertFavouriteBook)
         .then(() => {
             return Promise.resolve('Книга успешно добавлена в избранное');
-        });
+        })
 }
 
-function UpdateFavouriteBook(bookId, favourBook, statusId)
-{
+function UpdateFavouriteBook(bookId, favourBook, statusId) {
     logger.info('UpdateFavourite');
     var queryUpdateFavouriteBook = `UPDATE FavouriteBook SET BookStatusId = '${statusId}' where
         UserId = '${favourBook.user.UserId}' AND BookId = '${bookId}'`;
@@ -154,9 +228,8 @@ function UpdateFavouriteBook(bookId, favourBook, statusId)
     return db.executeQuery(queryUpdateFavouriteBook);
 }
 
-function GetStatusIdByName(statusName)
-{
-    console.log('GetStatusIdByName');
+function GetStatusIdByName(statusName) {
+    logger.info('GetStatusIdByName');
     var queryGetStatus = `SELECT BookStatusId from BookStatus where Status = '${statusName}'`;
 
     return db.executeQuery(queryGetStatus)
@@ -166,7 +239,7 @@ function GetStatusIdByName(statusName)
 }
 
 function updateTags(tags) {
-    console.log('updateTags');
+    logger.info('updateTags');
     return removeTags(tags.removed)
         .then(() => {
             return addTags(tags.added);
@@ -174,7 +247,7 @@ function updateTags(tags) {
 }
 
 function removeTags(tags) {
-    console.log('removeTags', tags);
+    logger.info('removeTags');
     let promises = [];
 
     for (let bookId in tags) {
@@ -186,7 +259,7 @@ function removeTags(tags) {
 }
 
 function addTags(tags) {
-    console.log('addTags');
+    logger.info('addTags');
     let promises = [];
     for (let bookId in tags) {
         tags[bookId].forEach(function(wordId) {
@@ -202,7 +275,7 @@ function addTags(tags) {
 }
 
 function getWordId(word) {
-    console.log('getWordId');
+    logger.info('getWordId');
     return checkWord(word)
         .then((word_id) => {
             if (!word_id)
@@ -213,20 +286,22 @@ function getWordId(word) {
 }
 
 function checkWord(keyWord) {
-    console.log('checkWord');
+    logger.info('checkWord');
     return db.findKeyWord(keyWord);
 }
 
 function addWord(keyWord) {
-    console.log('addWord');
+    logger.info('addWord');
     return db.addKeyWord(keyWord);
 }
 
 function prepareBook(book) {
+    logger.info('prepareBook');
     for (key in book) {
-        book[key] = book[key] || null;
         if (book[key]) {
             mysql_real_escape_string(book[key]);
+        } else if (book[key] === undefined) {
+            book[key] = null;
         }
     }
 }

@@ -8,7 +8,7 @@ import { AuthGuard } from './_guards/index';
 import { BookDetailsComponent } from './bookDetails/index';
 import { CatalogComponent } from './catalog/index';
 import { BooksWNewKeywordsListComponent } from './booksWNewKeywordsList/index';
-
+import { BookEditComponent } from './bookEdit/index';
 
 const appRoutes: Routes = [
     { path: 'index', component: MainComponent },
@@ -19,6 +19,7 @@ const appRoutes: Routes = [
     { path: 'bookDetails', component: BookDetailsComponent },
     { path: 'books/catalog', component: CatalogComponent },
     { path: 'books/moderator', component:  BooksWNewKeywordsListComponent},
+    { path: 'bookEdit/:id', component: BookEditComponent},
     // otherwise redirect to home
     { path: '**', redirectTo: 'index' },
 ];

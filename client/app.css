@@ -5,7 +5,9 @@
 .help-block {
     font-size: 12px;
 }
-
+.right{
+  float: right;
+}
 /* GLOBAL STYLES
 -------------------------------------------------- */
 /* Padding below the footer and lighter body text */

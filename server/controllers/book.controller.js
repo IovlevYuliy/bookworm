@@ -11,8 +11,8 @@ router.post('/moderator', updateTags)
 router.get('/catalog', getCatalog);
 router.get('/bookstatus', GetBookStatus);
 router.get('/bookDetails', getBookInfo);
-router.get('/moderator', getBookWithNewKeyWords)
-
+router.get('/moderator', getBookWithNewKeyWords);
+router.get('/favebooksstat',getFaveBooksStat)
 
 module.exports = router;
 
@@ -21,6 +21,21 @@ function findBook(req, res)
 	var params = url.parse(req.url, true);
  	var query = params.query;
     bookService.find(query.title)
+        .then(function (data) {
+            res.send(data);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+} 
+
+function getFaveBooksStat(req, res) 
+{
+    var params = url.parse(req.url, true);
+    var query = params.query;
+    // console.log(query);   
+    
+    bookService.getFaveBooksStat(query.userId)
         .then(function (data) {
             res.send(data);
         })
@@ -42,7 +57,6 @@ function getBookInfo(req, res) {
 }
 
 function getBookWithNewKeyWords(req, res) {
-    logger.debug('getBookWithNewKeyWords');
     bookService.getBookWithNewKeyWords()
         .then(function (data) {
             res.send(data);
@@ -52,9 +66,7 @@ function getBookWithNewKeyWords(req, res) {
         });
 }
 
-
 function getCatalog(req, res) {
-    logger.debug('getCatalog');
     bookService.getCatalog()
         .then(function (data) {
             res.send(data);
@@ -101,7 +113,6 @@ function getBookRates(req, res)
 {
   //  var params = url.parse(req.url, true);
   //  var query = params.query;
-    logger.debug('getBookRates');
     res.send('1');
     // bookService.getBookRates()
     //     .then(function (data) {

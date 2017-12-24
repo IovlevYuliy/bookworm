@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 
 if(config.util.getEnv('NODE_ENV') !== 'test') {
     // show logs
-    app.use(morgan('combined'));
+    // app.use(morgan('combined'));
 }
 
 //use JWT auth to secure the api, the token can be passed in the authorization header or querystring

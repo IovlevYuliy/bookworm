@@ -19,6 +19,7 @@ import { BookDetailsComponent } from './bookDetails/index';
 import { SendDataService } from './_services/data.service';
 import { CatalogComponent } from './catalog/index';
 import { BooksWNewKeywordsListComponent } from './booksWNewKeywordsList/index';
+import { BookEditComponent } from './bookEdit/index';
 
 import {RlTagInputModule} from 'angular2-tag-input';
  
@@ -44,7 +45,8 @@ import {RlTagInputModule} from 'angular2-tag-input';
         BookComponent,
         BookDetailsComponent,
         CatalogComponent,
-        BooksWNewKeywordsListComponent
+        BooksWNewKeywordsListComponent,
+        BookEditComponent
     ],
     providers: [
         customHttpProvider,

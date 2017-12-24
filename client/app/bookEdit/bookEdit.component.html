@@ -1,16 +1,6 @@
 <div class="row book-container">
     <div class="col-md-3">
-        <img src={{bookDetails.image}} width="100%" class="rounded-circle" alt="Обложка книги">
-        <div class="center">
-            <button class="btn btn-info center" style="margin-top:5px; margin-left: 15px;">
-                Загрузить
-            </button>
-        </div>
-        <div style="margin-top:20px">
-            Купить:
-            <a href={{bookDetails.link}}>{{bookDetails.link}}</a>
-        </div>
-
+        <img src={{bookDetails.image}} width="100%" alt="Обложка книги">
     </div>
     <div class="col-md-8">
         <div class="book-border">
@@ -57,9 +47,12 @@
                 </div>
             </div>
         </div>
-        <button class="btn btn-success" style="margin-top:5px">
-            Сохранить
-        </button> |
-        <a href="#">Отмена</a>
+        <div class="right">
+            <button class="btn btn-success" style="margin-top:5px">
+                Сохранить
+            </button> |
+            <a [routerLink]="['bookDetails']" [queryParams]="{ bookid: '700AB0CD-3CEB-4FAD-B439-096F1916BD27' }">Отмена</a> 
+        <!-- <b (click)="this._SendDataService.setData(bookDetails);">отмена</b> -->
+        </div>
     </div>
 </div>
