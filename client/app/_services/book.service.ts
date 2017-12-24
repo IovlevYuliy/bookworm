@@ -20,6 +20,10 @@ export class BookService {
         return this.http.get('/books/catalog').map((response: Response) => response.json());
     }
 
+    getRandomBook(){
+        return this.http.get('/books/random').map((response: Response) => response.json());
+    }
+
     getBookInfo(title: string, authors: string, userId: string){
         let params: URLSearchParams = new URLSearchParams();
 

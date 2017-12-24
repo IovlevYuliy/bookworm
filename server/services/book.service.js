@@ -15,6 +15,7 @@ service.getBookInfo = getBookInfo;
 service.getFaveBooksStat = getFaveBooksStat;
 service.getFavouriteBooksList = getFavouriteBooksList;
 service.getStatusNameById = getStatusNameById;
+service.getRandomBook = getRandomBook;
 service.getBookById = getBookById;
 
 module.exports = service;
@@ -309,6 +310,13 @@ function getFavouriteBooksList(userFave) {
         })
 }
 
+
+function getRandomBook(){
+    return getCatalog()
+        .then((books) => {
+            let randomIndex = Math.floor((Math.random() * books.length) + 1);
+            return Promise.resolve(books[randomIndex]); 
+               
 function getBookById(bookId)
 {
     logger.info('getBookById');
