@@ -72,14 +72,12 @@ function getInfo(title, authors, userId) {
                                   BookKeyWord BKW ON B.BookId = BKW.BookId and (BKW.IsChecked = 1 OR BKW.IsChecked IS NULL) left join 
                                   KeyWord KW ON KW.KeyWordId = BKW.KeyWordId 
                             ) where B.title = '${title}' AND B.authors = '${authors}'`;
-    console.log(queryGetStatus);
     return db.executeQuery(queryGetStatus)
         .then((res) => {
-            console.log(res);
             return Promise.resolve(res.recordset);
         })
         .catch((err) =>{
-            console.log(err);
+            logger.error(err);
         })
 }
 
@@ -129,7 +127,6 @@ function addInFavourite(favouriteBook) {
             }
         })
         .then((book_id) => {
-            console.log('11111');
             favouriteBookInfo.book_id = book_id;
             return CheckFavouriteBook(book_id, favouriteBook.user.UserId);
         })
@@ -170,7 +167,6 @@ function updateBook(book) {
     EstimatedRating = ${book.estimatedRating}, RatingCount = ${book.ratingCount}
     where BookId = '${book.BookId}'`;
     
-    console.log(queryUpdateBook);
     return db.executeQuery(queryUpdateBook)
         .then(() => {
             return Promise.resolve(book.BookId);
@@ -194,7 +190,6 @@ function AddBook(book) {
     var queryInsertBook = `insert into Book(title, authors, link, thumbnail, publishedDate, description, EstimatedRating) OUTPUT Inserted.BookId values
             ('${book.title}', '${book.authors}', '${book.link}', '${book.thumbnail}', ${book.publishedDate},
              '${book.description}', '${book.estimatedRating}')`;
-    logger.info(queryInsertBook);
     return db.executeQuery(queryInsertBook)
         .then((res) => {
             return Promise.resolve(res.recordset[0].BookId);
@@ -315,7 +310,6 @@ function getRandomBook(){
     return getCatalog()
         .then((books) => {
             let randomIndex = Math.floor((Math.random() * books.length) + 1);
-            console.log(books, randomIndex);
             return Promise.resolve(books[randomIndex - 1]); 
         })
 }

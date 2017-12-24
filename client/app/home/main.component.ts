@@ -21,7 +21,6 @@ export class MainComponent {
 	currentUser: any;
 	@ViewChild('chart') chartDOM: ElementRef;
 	// private fragment: string;
-	currentUser: any;
     ngOnInit() {
 		// this.route.fragment.subscribe(fragment => { this.fragment = fragment; });
 		this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
