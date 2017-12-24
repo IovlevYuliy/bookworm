@@ -74,7 +74,8 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
                         let self = this;
                         data.forEach(function(book)
                             {
-                                self.keyWords.push(book.Word);
+                                if (book.Word != null)
+                                    self.keyWords.push(book.Word);
                             }   
                         )
                     }
@@ -84,25 +85,35 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
                         this.bookDetails.userRating = 0;
                         this.bookDetails.ratingCount = 0;
                     }
+                    this.avgRating = Math.round(this.bookDetails.estimatedRating / (this.bookDetails.ratingCount==0?1:this.bookDetails.ratingCount) * 100) / 100;
                 },
                 error => {
                     this.alertService.error(error);
                 });
-        this.avgRating = Math.round(this.bookDetails.estimatedRating / (this.bookDetails.ratingCount==0?1:this.bookDetails.ratingCount) * 100) / 100;
+        
     }
 
     ngAfterViewInit() {
         var textareas = document.querySelectorAll('textarea');
         autosize(textareas);
-        var input = document.getElementsByClassName('ng2-tag-input-field ng-untouched ng-pristine ng-valid');
-        while(input.length > 0){
-        input[0].parentNode.removeChild(input[0]);
-        }
+        //var inputt = document.getElementsByClassName('ng2-tag-input-field ng-untouched ng-pristine ng-valid');
+        // while(input.length > 0){
+        // input[0].parentNode.removeChild(input[0]);
+        // }
+
+
+
        // let removeInput = document.getElementsByClassName('ng2-tag-input-remove');
        // console.log('qqqqq', removeInput);
         // for (var i = removeInput.length; i--; ) {
         //    removeInput.item(i).remove();
         // }
+
+
+        // var quest = angul.element(document.querySelector(".quest"));
+        // var questHeader = quest.find('h3');
+        // // удалим заголовок
+        // questHeader.remove();
     }
 
     AddBook(book:BookDetails, status: string)
@@ -149,7 +160,8 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
     }
 
      AddRate(rateValue: string) {
-         //если у пользователя уже стоит такая сохраненная оценка, надо сбросить оценку вообще.         
+         //если у пользователя уже стоит такая сохраненная оценка, надо сбросить оценку вообще.
+         console.log('old', rateValue,  this.bookDetails);         
          var newSumRate;
          var newRatingCount;
          if(Math.round(this.bookDetails.userRating) === Number(rateValue)) {
@@ -179,6 +191,7 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
          /* Вот теперь тут закидываем в базу оценку. Модель готова */
         let currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
+        console.log('ttttt', this.bookDetails);
         this.AddBook(this.bookDetails, this.bookDetails.status);
         this.avgRating = Math.round(this.bookDetails.estimatedRating / (this.bookDetails.ratingCount==0?1:this.bookDetails.ratingCount) * 100) / 100;
      }
