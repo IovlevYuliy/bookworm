@@ -29,7 +29,7 @@ export class FavouriteBooksComponent implements OnInit, OnDestroy,  AfterViewIni
         this.bookService.getStatusNameById(this.statusId)
                .subscribe(data => {
                console.log(data); 
-                   this.statusName = String(data._body); 
+                   this.statusName = String(data);
                 },
                 error => {
                    this.alertService.error(error);
