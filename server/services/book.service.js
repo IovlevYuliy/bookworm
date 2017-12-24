@@ -15,6 +15,7 @@ service.getBookInfo = getBookInfo;
 service.getFaveBooksStat = getFaveBooksStat;
 service.getFavouriteBooksList = getFavouriteBooksList;
 service.getStatusNameById = getStatusNameById;
+service.getBookById = getBookById;
 
 module.exports = service;
 
@@ -305,6 +306,16 @@ function getFavouriteBooksList(userFave) {
     return db.executeQuery(queryfaveStat)
         .then((res) => {
             return Promise.resolve(res.recordset);
+        })
+}
+
+function getBookById(bookId)
+{
+    logger.info('getBookById');
+    let queryGetBook = `SELECT * FROM Book where BookId = '${bookId}'`;    
+    return db.executeQuery(queryGetBook)
+        .then((res) => {
+            return Promise.resolve(res.recordset[0]);
         })
 }
 

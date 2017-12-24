@@ -15,6 +15,8 @@ router.get('/moderator', getBookWithNewKeyWords);
 router.get('/favebooksstat',getFaveBooksStat);
 router.get('/favebookslist',getFaveBooksList);
 router.get('/statusname', getStatusNameById);
+router.get('/bookEdit', getBookById);
+
 
 module.exports = router;
 
@@ -29,6 +31,17 @@ function findBook(req, res) {
             res.status(400).send(err);
         });
 } 
+function getBookById(req, res) {
+    var params = url.parse(req.url, true);
+    var query = params.query;
+     bookService.getBookById(query.bookId)
+        .then(function (data) {
+            res.send(data);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
 
 function getFaveBooksStat(req, res)  {
     var params = url.parse(req.url, true);
