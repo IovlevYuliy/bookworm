@@ -95,7 +95,7 @@ function getBooks() {
     logger.info('getBooks');
     var queryGetBook = `SELECT * from ((Book inner join BookKeyWord on BookKeyWord.BookId = Book.BookId) 
             inner join KeyWord ON 
-            KeyWord.KeyWordId = BookKeyWord.KeyWordId)`;
+            KeyWord.KeyWordId = BookKeyWord.KeyWordId) where BookKeyWord.IsChecked = 'false'`;
     return db.executeQuery(queryGetBook)
         .then((res) => {
             return Promise.resolve(res.recordset);
@@ -315,7 +315,8 @@ function getRandomBook(){
     return getCatalog()
         .then((books) => {
             let randomIndex = Math.floor((Math.random() * books.length) + 1);
-            return Promise.resolve(books[randomIndex]); 
+            console.log(books, randomIndex);
+            return Promise.resolve(books[randomIndex - 1]); 
         })
 }
 
