@@ -1,6 +1,6 @@
 <div class="row book-container">
     <div class="col-md-3">
-        <img src={{bookDetails.image}} width="100%" alt="Обложка книги">
+        <img src={{bookDetails.thumbnail}} width="100%" alt="Обложка книги">
     </div>
     <div class="col-md-8">
         <div class="book-border">
@@ -51,7 +51,7 @@
             <button class="btn btn-success" style="margin-top:5px">
                 Сохранить
             </button> |
-            <a [routerLink]="['bookDetails']" [queryParams]="{ bookid: '700AB0CD-3CEB-4FAD-B439-096F1916BD27' }">Отмена</a> 
+            <a [routerLink]="['bookDetails']" [queryParams]="{ bookid: 'bookDetails.BookId' }">Отмена</a> 
         <!-- <b (click)="this._SendDataService.setData(bookDetails);">отмена</b> -->
         </div>
     </div>

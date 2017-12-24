@@ -79,4 +79,15 @@ export class BookService {
         requestOptions.search = params;        
         return this.http.get('/books/statusname', requestOptions).map((response: Response) => response.json());
     }
+
+    getBookById(bookId: string)
+    {
+       let params: URLSearchParams = new URLSearchParams();
+
+        params.set('bookId', bookId);
+
+        let requestOptions = new RequestOptions();
+        requestOptions.search = params;
+        return this.http.get('/books/bookEdit', requestOptions).map((response: Response) => response.json());
+    }
 }

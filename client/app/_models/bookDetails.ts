@@ -28,4 +28,5 @@ export class BookDetails {
         this.ratingCount = _ratingCount;
         this.userRating = _userRating;
     }
+
 }
