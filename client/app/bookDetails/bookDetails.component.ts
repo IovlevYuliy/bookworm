@@ -19,6 +19,9 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
     avgRating: any;
     private sub: any;
     bookid:string;
+    keyWords: string[] = [];
+    @ViewChild('tags')
+    private eltags : ElementRef;
 
     constructor(
         private bookService: BookService,
@@ -67,6 +70,13 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
 
                         this.changeRateImage(this.bookDetails.userRating, 0, "user-rate");
                         this.changeRateImage(this.bookDetails.estimatedRating/(this.bookDetails.ratingCount===0?1:this.bookDetails.ratingCount), 0, "avg-rate");
+                    
+                        let self = this;
+                        data.forEach(function(book)
+                            {
+                                self.keyWords.push(book.Word);
+                            }   
+                        )
                     }
                     else
                     {
@@ -84,6 +94,15 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
     ngAfterViewInit() {
         var textareas = document.querySelectorAll('textarea');
         autosize(textareas);
+        var input = document.getElementsByClassName('ng2-tag-input-field ng-untouched ng-pristine ng-valid');
+        while(input.length > 0){
+        input[0].parentNode.removeChild(input[0]);
+        }
+       // let removeInput = document.getElementsByClassName('ng2-tag-input-remove');
+       // console.log('qqqqq', removeInput);
+        // for (var i = removeInput.length; i--; ) {
+        //    removeInput.item(i).remove();
+        // }
     }
 
     AddBook(book:BookDetails, status: string)

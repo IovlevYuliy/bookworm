@@ -75,14 +75,16 @@ function getInfo(title, authors, userId) {
     // var queryGetStatus = `SELECT B.BookId, status, UserRating, RatingCount, EstimatedRating from ((BookStatus BS inner join FavouriteBook FB on BS.BookStatusId = FB.BookStatusId) 
     //         inner join Book B ON 
     //         B.BookId = FB.BookId) where B.title = '${title}' AND B.authors = '${authors}' AND FB.UserId = '${userId}'`;
-    var queryGetStatus = `select B.BookId, FB.Status, FB.UserRating, B.RatingCount, B.EstimatedRating
-            from Book B left join 
+    var queryGetStatus = `select B.BookId, FB.Status, FB.UserRating, B.RatingCount, B.EstimatedRating, KW.Word
+            from (((Book B left join 
                 ( select FB.BookId, FB.UserRating, BS.Status, FB.UserId
                 from FavouriteBook FB inner join
                         BookStatus BS on FB.BookStatusId = BS.BookStatusId 
                 where FB.UserId = '${userId}'
-                ) FB on B.BookId = FB.BookId 
-            where B.title = '${title}' AND B.authors = '${authors}'`;
+                ) FB on B.BookId = FB.BookId )
+                left join BookKeyWord BKW ON B.BookId = BKW.BookId)
+                left join KeyWord KW ON KW.KeyWordId = BKW.KeyWordId) where (BKW.IsChecked = 'true' OR 
+                BKW.IsChecked IS NULL) AND B.title = '${title}' AND B.authors = '${authors}'`;
 
     return db.executeQuery(queryGetStatus)
         .then((res) => {
