@@ -15,6 +15,7 @@ service.getBookInfo = getBookInfo;
 service.getFaveBooksStat = getFaveBooksStat;
 service.getFavouriteBooksList = getFavouriteBooksList;
 service.getStatusNameById = getStatusNameById;
+service.getRandomBook = getRandomBook;
 service.getBookById = getBookById;
 service.UpdateBookInfo = UpdateBookInfo;
 
@@ -94,7 +95,7 @@ function getBooks() {
     logger.info('getBooks');
     var queryGetBook = `SELECT * from ((Book inner join BookKeyWord on BookKeyWord.BookId = Book.BookId) 
             inner join KeyWord ON 
-            KeyWord.KeyWordId = BookKeyWord.KeyWordId)`;
+            KeyWord.KeyWordId = BookKeyWord.KeyWordId) where BookKeyWord.IsChecked = 'false'`;
     return db.executeQuery(queryGetBook)
         .then((res) => {
             return Promise.resolve(res.recordset);
@@ -309,6 +310,17 @@ function getFavouriteBooksList(userFave) {
         })
 }
 
+
+function getRandomBook(){
+    return getCatalog()
+        .then((books) => {
+            let randomIndex = Math.floor((Math.random() * books.length) + 1);
+            console.log(books, randomIndex);
+            return Promise.resolve(books[randomIndex - 1]); 
+        })
+}
+
+               
 function getBookById(bookId)
 {
     logger.info('getBookById');

@@ -67,7 +67,7 @@ function createUser(userParam) {
 function addUser(user) {  
     logger.info('addUser');
     let queryInsertUser = `insert into [User](UserRoleId, Login, Password, Email) values
-        (1, '${user.Login}', '${user.hash}', '${user.email}')`;
+        (2, '${user.Login}', '${user.hash}', '${user.email}')`;
 
     return db.executeQuery(queryInsertUser)
         .then(() => {
