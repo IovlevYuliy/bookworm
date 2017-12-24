@@ -37,7 +37,6 @@ function findBook(req, res) {
 function getRandomBook(req, res){
     bookService.getRandomBook()
         .then(function (data) {
-            console.log('sendddd', data);
             res.json(data);
         })
         .catch(function (err) {
@@ -157,8 +156,7 @@ function getBookStatus(req, res)
         });
 }
 
-function getBookRates(req, res)
-{
+function getBookRates(req, res) {
   //  var params = url.parse(req.url, true);
   //  var query = params.query;
     res.send('1');
@@ -171,9 +169,7 @@ function getBookRates(req, res)
     //     });
 }
 
-function updateBookInfo(req, res)
-{
-    console.log(req.body);
+function updateBookInfo(req, res) {
     bookService.UpdateBookInfo(req.body)
         .then(function (data) {
             res.json(data);
