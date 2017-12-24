@@ -27,7 +27,8 @@ export class FavouriteBooksComponent implements OnInit, OnDestroy,  AfterViewIni
         this.sub = this.route.params.subscribe(params => {
         this.statusId = params['statusId'];
         this.bookService.getStatusNameById(this.statusId)
-               .subscribe(data => { 
+               .subscribe(data => {
+               console.log(data); 
                    this.statusName = String(data._body); 
                 },
                 error => {
