@@ -20,15 +20,24 @@ export class BookEditComponent implements OnInit, OnDestroy,  AfterViewInit{
     
     constructor(private route: ActivatedRoute,
                 private bookService: BookService, 
-                private alertService: AlertService) {}    
+                private alertService: AlertService) {
+        this.bookDetails = new BookDetails("", "", "", "", "", "", "", 0, 0, 0);
+    }    
 
     ngOnInit() {
         this.sub = this.route.params.subscribe(params => {
            this.id = params['id']; 
-           /* достать книжку по айди */
+           this.bookService.getBookById(this.id)
+            .subscribe(
+                data => {
+                    this.bookDetails = data;
+                },
+                error => {
+                    this.alertService.error(error);
+                }); 
         });
+
     }
-      
 
     ngAfterViewInit() {
         var textareas = document.querySelectorAll('textarea');
