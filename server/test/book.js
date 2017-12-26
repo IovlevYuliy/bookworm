@@ -14,8 +14,8 @@ describe('Books', () => {
     var token = null;
     var authUser = null;
     var user = {
-        login: 'ydi',
-        password: '123',
+        login: 'Nas',
+        password: '251000',
     }
     // before(function(done) {
     //     chai.request(server)
@@ -80,6 +80,9 @@ describe('Books', () => {
                 description: 'The Lord of the Rings is an epic high fantasy novel',
                 link: '',
                 thumbnail: '',
+                estimatedRating: 0,
+                ratingCount: 0,
+                userRating: 0,
                 status: 'Прочитана',
                 estimatedRating: 0,
                 userRating: 0
@@ -93,7 +96,7 @@ describe('Books', () => {
                   done();
                 });
         });
-
+        
         it('it should GET all the books from DB and check that book table contains 1 book', (done) => {
             chai.request(server)
                 .get('/books/catalog')

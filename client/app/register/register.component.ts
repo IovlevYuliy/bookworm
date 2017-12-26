@@ -22,7 +22,6 @@ export class RegisterComponent {
         this.userService.create(this.model)
             .subscribe(
                 data => {
-                    console.log('ddddd', data);
                     if (!data.isExist)
                     {
                         this.alertService.success('Регистрация прошла успешно', true);

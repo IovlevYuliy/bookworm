@@ -22,6 +22,7 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
     keyWords: string[] = [];
     @ViewChild('tags')
     private eltags : ElementRef;
+    currentUser: any;
 
     constructor(
         private bookService: BookService,
@@ -54,9 +55,9 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
             0
         );
 
-        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
         /*получение статуса книги */
-        this.bookService.getBookInfo(this.receivedData.title, this.receivedData.authors, currentUser.UserId)
+        this.bookService.getBookInfo(this.receivedData.title, this.receivedData.authors, this.currentUser.UserId)
             .subscribe(
                 data => {
                     console.log('statusIs: ', data);
@@ -64,9 +65,9 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
                     {
                         this.bookDetails._id = data[0].BookId;
                         this.bookDetails.status = data[0].Status;
-                        this.bookDetails.estimatedRating = data[0].EstimatedRating;
-                        this.bookDetails.userRating = data[0].UserRating;
-                        this.bookDetails.ratingCount = data[0].RatingCount;
+                        this.bookDetails.estimatedRating = data[0].EstimatedRating || 0;
+                        this.bookDetails.userRating = data[0].UserRating || 0;
+                        this.bookDetails.ratingCount = data[0].RatingCount || 0;
 
                         this.changeRateImage(this.bookDetails.userRating, 0, "user-rate");
                         this.changeRateImage(this.bookDetails.estimatedRating/(this.bookDetails.ratingCount===0?1:this.bookDetails.ratingCount), 0, "avg-rate");
@@ -119,8 +120,7 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
     AddBook(book:BookDetails, status: string)
     {
         book.status = status;
-        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        this.bookService.AddInFavourite(book, currentUser)
+        this.bookService.AddInFavourite(book, this.currentUser)
             .subscribe(
                 data => {
                     console.log('addbookresult', data);
@@ -137,7 +137,6 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
     }
 
     changeRateImage(newRate : number, oldRate : number, rateClassName : string){
-        console.log('changeRateImage', newRate, oldRate, rateClassName);
         newRate = Math.round(newRate);
         oldRate = Math.round(oldRate);
         var arr = Array.from(document.getElementsByClassName(rateClassName));
@@ -151,7 +150,6 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
         else {
             return;
         }
-        console.log('rates', rates);
         rates.forEach(element => {
             if(Number(element.id) <= (newRate > oldRate ? newRate : oldRate) ) {
                 element.classList.toggle('star-full'); 
@@ -161,7 +159,6 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
 
      AddRate(rateValue: string) {
          //если у пользователя уже стоит такая сохраненная оценка, надо сбросить оценку вообще.
-         console.log('old', rateValue,  this.bookDetails);         
          var newSumRate;
          var newRatingCount;
          if(Math.round(this.bookDetails.userRating) === Number(rateValue)) {
@@ -189,9 +186,6 @@ export class BookDetailsComponent implements OnInit, AfterViewInit{
          this.bookDetails.ratingCount = newRatingCount;
 
          /* Вот теперь тут закидываем в базу оценку. Модель готова */
-        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
-
-        console.log('ttttt', this.bookDetails);
         this.AddBook(this.bookDetails, this.bookDetails.status);
         this.avgRating = Math.round(this.bookDetails.estimatedRating / (this.bookDetails.ratingCount==0?1:this.bookDetails.ratingCount) * 100) / 100;
      }
