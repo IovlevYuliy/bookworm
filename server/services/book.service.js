@@ -188,8 +188,9 @@ function AddBook(book) {
     logger.info('add book');
     prepareBook(book);
     var queryInsertBook = `insert into Book(title, authors, link, thumbnail, publishedDate, description, EstimatedRating) OUTPUT Inserted.BookId values
-            ('${book.title}', '${book.authors}', '${book.link}', '${book.thumbnail}', ${book.publishedDate},
+            ('${book.title}', '${book.authors}', '${book.link}', '${book.thumbnail}', '${book.publishedDate}',
              '${book.description}', '${book.estimatedRating}')`;
+
     return db.executeQuery(queryInsertBook)
         .then((res) => {
             return Promise.resolve(res.recordset[0].BookId);
@@ -347,9 +348,6 @@ function prepareBook(book) {
     book.authors = mysql_real_escape_string(book.authors);
     if (book.description)
         book.description = mysql_real_escape_string(book.description);
-
-    if (!book.publishedDate)
-        book.publishedDate = null;
 }
 
 function mysql_real_escape_string (str) {

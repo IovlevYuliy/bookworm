@@ -11,6 +11,7 @@ import { User } from './_models/index';
 })
 
 export class AppComponent implements OnInit{
+    
 	book = {
         title: ""
     };

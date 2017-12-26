@@ -20,7 +20,7 @@ function authenticate(req, res) {
                 // authentication successful
                 res.send(user);
             } else {
-                // authentication failed
+                // authentication failedrfb
                 res.status(206).send('Username or password is incorrect');
             }
         })

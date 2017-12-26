@@ -47,7 +47,7 @@ export class BookService {
     }
   
 
-    getBooksWithNewKeyWords(){
+    getBooksWithNewKeyWords() {
         return this.http.get('/books/moderator').map((response: Response) => response.json());
     }
 
@@ -67,7 +67,7 @@ export class BookService {
         return this.http.get('/books/favebooksstat', requestOptions).map((response: Response) => response.json());
     }
 
-    getFavouriteBooksList(userId: string, statusId:string){
+    getFavouriteBooksList(userId: string, statusId:string) {
         let params: URLSearchParams = new URLSearchParams();
         params.set('userId',  userId);
         params.set('statusId', statusId);
