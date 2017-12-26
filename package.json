@@ -7,7 +7,7 @@
     "start-client": "npm start --prefix ./client",
     "start-server": "npm start --prefix ./server/",
     "start": "start npm run start-server && start npm run start-client",
-    "test": "npm start",
+    "test": "",
     "install": "npm run install-server && npm run install-client",
     "install-client": "npm install --prefix ./client",
     "install-server": "npm install --prefix ./server"
