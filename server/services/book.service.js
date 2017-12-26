@@ -23,8 +23,13 @@ module.exports = service;
 
 function find(key) {
     logger.info('find');
+    var options = {
+        lang: 'ru',
+        type: 'books',
+        order: 'relevance',
+    }
     return new Promise((resolve, reject) => {
-        books.search(key, function(error, results) {
+        books.search(key, options, function(error, results) {
             return error ? reject(error) : resolve(results);
         });
     });
@@ -112,7 +117,6 @@ function getCatalog() {
 
 function addInFavourite(favouriteBook) {
     logger.info('addInFavourite');
-    
     let favouriteBookInfo = {};
    
     return checkBook(favouriteBook.book)
@@ -201,7 +205,6 @@ function AddBookFavourite(bookId, favourBook, statusId) {
     logger.info('AddFavourite');
     var queryInsertFavouriteBook = `insert into FavouriteBook(UserId, BookId, BookStatusId, UserRating) values
             ('${favourBook.user.UserId}', '${bookId}', '${statusId}', '${favourBook.book.userRating}')`;
-
     return db.executeQuery(queryInsertFavouriteBook)
         .then(() => {
             return Promise.resolve('Книга успешно добавлена в избранное');
